@@ -68,6 +68,10 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATES[0]['OPTIONS']['context_processors'].append(
+        "quotes.context_processors.quotes_processor"
+    )
+
 WSGI_APPLICATION = 'welove_cos.wsgi.application'
 
 
