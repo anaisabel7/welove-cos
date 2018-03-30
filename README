@@ -1,0 +1,12 @@
+## README for welove_cos
+
+This web app is meant to store quotes from songs from City Of Sound, choose one randomly every day and display it as the "quote of the day".
+
+
+#### Prerequisites
+
+For the scheduled tasks to work you will need to install the redis-server:
+
+```
+sudo apt-get install redis-server
+```
