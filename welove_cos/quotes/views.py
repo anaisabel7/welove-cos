@@ -9,9 +9,13 @@ from .models import Quote
 
 
 def index(request):
-    random_quote = Quote.objects.order_by('?')[0]
+    try:
+        selected_quote = Quote.objects.filter(selected=True)[0]
+    except IndexError:
+        selected_quote = random_quote = Quote.objects.order_by('?')[0]
+
     template = loader.get_template('quotes/index.html')
     context = {
-        'quote_of_the_day': random_quote,
+        'quote_of_the_day': selected_quote,
     }
     return HttpResponse(template.render(context, request))
