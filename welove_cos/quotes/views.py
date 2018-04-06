@@ -12,7 +12,7 @@ def index(request):
     try:
         selected_quote = Quote.objects.filter(selected=True)[0]
     except IndexError:
-        selected_quote = random_quote = Quote.objects.order_by('?')[0]
+        selected_quote = Quote.objects.order_by('?')[0]
 
     template = loader.get_template('quotes/index.html')
     context = {
