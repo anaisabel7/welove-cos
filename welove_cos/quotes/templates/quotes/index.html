@@ -1,7 +1,7 @@
-{% if quote_of_the_day %}
-    <p>The quote of the day {% if quotes_context %}from {{quotes_context.common_origin}} {% endif %}is:</p>
-    <p>{{quote_of_the_day.quote_text}}</p>
-    <p>From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote_of_the_day.source}} </p>
+{% if quote %}
+    <p>The {{frequency}} quote {% if quotes_context %}from {{quotes_context.common_origin}} {% endif %}is:</p>
+    <p>{{quote.quote_text}}</p>
+    <p>From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote.source}} </p>
 {% else %}
     <p>There is no quote available today</p>
 {% endif %}
