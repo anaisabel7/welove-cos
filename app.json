@@ -1,0 +1,22 @@
+{
+  "name": "We Love City Of Sound",
+  "description": "An app to display quotes from City Of Sound.",
+  "image": "heroku/python",
+  "repository": "https://git.heroku.com/welovecityofsound.git",
+  "keywords": ["music", "quotes", "cityofsound" ],
+  "addons": [ "heroku-postgresql" ],
+  "env": {
+    "SECRET_KEY": {
+      "description": "The secret key for the Django application.",
+      "generator": "secret"
+    }
+  },
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "python manage.py collectstatic --noinput",
+        "test": "python manage.py test"
+      }
+    }
+  }
+}
