@@ -137,3 +137,6 @@ STATIC_URL = '/static/'
 
 CELERY_BROKER_URL = 'redis://'
 CELERY_IMPORTS = ['quotes']
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
