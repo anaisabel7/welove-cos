@@ -131,6 +131,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+ADMINS = [('Ana Isabel', 'cmanaisabel7@gmail.com')]
+
 CELERY_BROKER_URL = 'redis://'
 CELERY_IMPORTS = ['quotes']
 
