@@ -82,20 +82,20 @@ WSGI_APPLICATION = 'welove_cos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'welove_cosdb',
-#         'USER': 'cos_lover',
-#         'PASSWORD': 'loveoverfear',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config()
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'welove_cosdb',
+        'USER': 'cos_lover',
+        'PASSWORD': 'loveoverfear',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config()
+# }
 
 
 # Password validation
