@@ -134,7 +134,12 @@ STATIC_URL = '/static/'
 
 ADMINS = [('Ana Isabel', 'cmanaisabel7@gmail.com')]
 
-CELERY_BROKER_URL = 'redis://'
+
+try:
+    CELERY_BROKER_URL = os.environ['REDIS_URL']
+except KeyError:
+    CELERY_BROKER_URL = 'redis://'
+
 CELERY_IMPORTS = ['quotes']
 
 # Activate Django-Heroku.
