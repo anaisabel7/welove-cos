@@ -1,7 +1,9 @@
-{% if quote %}
-    <p>The {{frequency}} quote {% if quotes_context %}from {{quotes_context.common_origin}} {% endif %}is:</p>
-    <p>{{quote.quote_text}}</p>
-    <p>From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote.source}} </p>
-{% else %}
-    <p>There is no quote available today</p>
-{% endif %}
+<div class="main">
+    {% if quote %}
+        <p class="header">The {{frequency}} quote {% if quotes_context %}from {{quotes_context.common_origin}} {% endif %}is:</p>
+        <p class="quote">{{quote.quote_text}}</p>
+        <p class="source">From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote.source}} </p>
+    {% else %}
+        <p class="header">There is no quote available today</p>
+    {% endif %}
+</div>
