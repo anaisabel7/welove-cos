@@ -4,6 +4,6 @@
         <p class="quote">{{quote.quote_text}}</p>
         <p class="source">From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote.source}} </p>
     {% else %}
-        <p class="header">There is no quote available today</p>
+        <p class="header">There is no {{frequency}} quote available</p>
     {% endif %}
 </div>
