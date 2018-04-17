@@ -3,11 +3,11 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 
 [packages]
-django = "*"
+Django = "*"
 gunicorn = "*"
 django-heroku = "*"
 celery = "*"
 redis = "*"
 django_celery_beat = "*"
-psycopg2 = "*"
+"psycopg2" = "*"
 raven = "*"
