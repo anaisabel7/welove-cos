@@ -8,7 +8,7 @@ from .views import random, daily
 from . import context_processors
 
 
-class ViewTestCase(TestCase):
+class QuoteReadyTestCase(TestCase):
 
     quote_text = "This band rocks"
     source = "Me"
@@ -23,14 +23,14 @@ class ViewTestCase(TestCase):
         return quote_object
 
 
-class RandomViewTest(ViewTestCase):
+class RandomViewTest(QuoteReadyTestCase):
 
     def test_default_message_no_quote(self):
         response = self.client.get(reverse('random'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "There is no random quote available")
 
-    def test_random_querryset(self):
+    def test_random_queryset(self):
         self.create_quote()
         with patch.object(Quote.objects, 'order_by') as mock_quotes_order_by:
             response = self.client.get(reverse('random'))
@@ -44,7 +44,7 @@ class RandomViewTest(ViewTestCase):
         self.assertContains(response, self.source)
 
 
-class ViewContextProcessorTest(ViewTestCase):
+class ViewContextProcessorTest(QuoteReadyTestCase):
 
     def test_quotes_context_processor(self):
         self.create_quote()
@@ -80,7 +80,7 @@ class ViewContextProcessorTest(ViewTestCase):
             )
 
 
-class DailyViewTest(ViewTestCase):
+class DailyViewTest(QuoteReadyTestCase):
 
     def test_default_message_no_quote(self):
         response = self.client.get(reverse('daily'))
