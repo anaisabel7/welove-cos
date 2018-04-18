@@ -1,8 +1,7 @@
-from django.test import TestCase
 from mock import patch
 from .models import Quote
 from .tasks import get_random_quote
-from .test_views import QuoteReadyTestCase
+from .tests import QuoteReadyTestCase
 
 
 class RandomQuoteTest(QuoteReadyTestCase):
