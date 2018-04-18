@@ -17,3 +17,15 @@ body {
 .main .source {
     font-size: 25px;
 }
+
+@media only screen and (max-width: 768px) {
+    .main .header {
+        font-size: 34px;
+    }
+    .main .quote {
+        font-size: 43px;
+    }
+    .main .source {
+        font-size: 34px;
+    }
+}
