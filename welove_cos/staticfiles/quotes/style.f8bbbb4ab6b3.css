@@ -1,0 +1,19 @@
+body {
+    background: #260d26;
+}
+.main {
+    color: #e0ebeb;
+    text-align: center;
+    font-family: Verdana, Geneva, sans-serif;
+    margin-top: 100px;
+}
+.main .header {
+    font-size: 25px;
+    padding-bottom: 15px;
+}
+.main .quote {
+    font-size: 32px;
+}
+.main .source {
+    font-size: 25px;
+}

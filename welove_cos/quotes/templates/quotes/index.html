@@ -1,9 +1,13 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
+
 <div class="main">
     {% if quote %}
-        <p class="header">The {{frequency}} quote {% if quotes_context %}from {{quotes_context.common_origin}} {% endif %}is:</p>
+        <p class="header">{{frequency|capfirst}} quote {% if quotes_context %}from {{quotes_context.common_origin}}{% endif %}:</p>
         <p class="quote">{{quote.quote_text}}</p>
-        <p class="source">From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote.source}} </p>
+        <p class="source">From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote.source|title}} </p>
     {% else %}
-        <p class="header">There is no {{frequency}} quote available</p>
+        <p class="header">There is no {{frequency|lower}} quote available</p>
     {% endif %}
 </div>
