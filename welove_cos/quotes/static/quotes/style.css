@@ -18,6 +18,12 @@ body {
 .main .source {
     font-size: 25px;
 }
+.main .source a:link {
+    color: #e0ebeb;
+}
+.main .source a:visited {
+    color: #e0ebeb;
+}
 
 @media only screen and (max-device-width: 768px) {
     .main .header {
