@@ -6,6 +6,7 @@ body {
     text-align: center;
     font-family: Verdana, Geneva, sans-serif;
     margin-top: 100px;
+    margin: 100px 30px 30px 30px;
 }
 .main .header {
     font-size: 25px;
