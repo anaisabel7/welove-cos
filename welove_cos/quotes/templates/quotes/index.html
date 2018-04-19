@@ -6,7 +6,14 @@
     {% if quote %}
         <p class="header">{{frequency|capfirst}} quote {% if quotes_context %}from {{quotes_context.common_origin}}{% endif %}:</p>
         <p class="quote">{{quote.quote_text}}</p>
-        <p class="source">From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}{{quote.source|title}} </p>
+        <p class="source">
+            From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}
+            {% if quote.source.link %}
+                <a href="\""{{quote.source.link}}"\"">{{quote.source.name|title}}</a>
+            {% else %}
+                {{quote.source.name|title}}
+            {% endif %}
+        </p>
     {% else %}
         <p class="header">There is no {{frequency|lower}} quote available</p>
     {% endif %}
