@@ -18,6 +18,26 @@ body {
 .main .source {
     font-size: 25px;
 }
+.main .link {
+    font-size: 20px;
+    margin-top: 60px;
+}
+.main .link a:link {
+    color: #e0ebeb;
+    text-decoration: none;
+    font-style: italic;
+}
+.main .link a:visited {
+    color: #e0ebeb;
+    text-decoration: none;
+    font-style: italic;
+}
+.main .link a:hover {
+    color: #6d4f46;
+    text-decoration: none;
+    font-style: italic;
+
+}
 
 @media only screen and (max-device-width: 768px) {
     .main .header {
