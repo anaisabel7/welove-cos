@@ -1,12 +1,29 @@
 body {
     background: #260d26;
 }
+
 .main {
     color: #e0ebeb;
     text-align: center;
     font-family: Verdana, Geneva, sans-serif;
     margin-top: 100px;
     margin: 100px 30px 30px 30px;
+}
+.main .home a:link {
+    color: #e0ebeb;
+    text-decoration: none;
+}
+.main .home a:visited {
+    color: #e0ebeb;
+    text-decoration: none;
+}
+.main .home a:hover {
+    color: #92b9b9;
+    text-decoration: none;
+}
+.main .home .fa-home {
+    font-size: 35px;
+    margin-top: 50px;
 }
 .main .header {
     font-size: 25px;

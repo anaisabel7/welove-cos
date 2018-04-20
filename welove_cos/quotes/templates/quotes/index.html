@@ -3,19 +3,5 @@
 <link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
 
 <div class="main">
-    {% if quote %}
-        <p class="header">{{frequency|capfirst}} quote {% if quotes_context %}from {{quotes_context.common_origin}}{% endif %}:</p>
-        <p class="quote">{{quote.quote_text}}</p>
-        <p class="source">
-            From {% if quotes_context %} the {{quotes_context.type_of_source}} {% endif %}
-            {{quote.source.name|title}}
-        </p>
-        {% if quote.source.link %}
-            <p class="link">
-                <a href="{{quote.source.link}}">-- watch --</a>
-            </p>
-        {% endif %}
-    {% else %}
-        <p class="header">There is no {{frequency|lower}} quote available</p>
-    {% endif %}
+    <p class="header">City Of Sound</p>
 </div>
