@@ -35,3 +35,26 @@ class QuoteTest(QuoteReadyTestCase):
             quote_str,
             "A quote from {}".format(quote.source.name)
         )
+
+
+class SourceTest(QuoteReadyTestCase):
+    def test_source_fields(self):
+        fields = {
+            'name': models.CharField,
+            'link': models.URLField,
+        }
+        for each in fields:
+            self.assertTrue(hasattr(Source, each))
+            field = Source._meta.get_field(each)
+            self.assertTrue(isinstance(field, fields[each]))
+
+        quote_text_max_length = Source._meta.get_field('name').max_length
+        self.assertEqual(quote_text_max_length, 100)
+
+        quote_text_max_length = Source._meta.get_field('link').max_length
+        self.assertEqual(quote_text_max_length, 300)
+
+    def test_str_method(self):
+        source = self.create_source()
+        source_str = source.__str__()
+        self.assertEqual(source_str, source.name)
