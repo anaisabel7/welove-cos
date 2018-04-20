@@ -26,7 +26,7 @@ class RandomViewTest(QuoteReadyTestCase):
         response = self.client.get(reverse('random'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.quote_text)
-        self.assertContains(response, self.source)
+        self.assertContains(response, self.source_name)
 
 
 class ViewContextProcessorTest(QuoteReadyTestCase):
@@ -82,14 +82,15 @@ class DailyViewTest(QuoteReadyTestCase):
         self.create_quote()
 
         text = "Selected quote text"
-        source = "selected quote source"
+        source_name = "selected quote source"
         selected = True
+        source = self.create_source(name=source_name)
         self.create_quote(text, source, selected)
 
         response = self.client.get(reverse('daily'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, text)
-        self.assertContains(response, source)
+        self.assertContains(response, source_name.title())
         self.assertNotIn(self.quote_text, str(response.content))
 
     def test_index_returns_daily_view(self):
