@@ -95,7 +95,7 @@ body {
 
 /* Media specific & small screens */
 
-@media only screen and (max-device-width: 768px) {
+@media screen and (max-device-width: 768px) {
     .main .header {
         font-size: 34px;
     }
