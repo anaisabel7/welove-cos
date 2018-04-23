@@ -58,19 +58,8 @@ body {
     font-style: italic;
 }
 
-@media only screen and (max-device-width: 768px) {
-    .main .header {
-        font-size: 34px;
-    }
-    .main .quote {
-        font-size: 43px;
-    }
-    .main .source {
-        font-size: 34px;
-    }
-}
-
 /* Index */
+
 
 .main .title {
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
@@ -104,7 +93,18 @@ body {
     font-size: 25px;
 }
 
+/* Media specific & small screens */
+
 @media only screen and (max-device-width: 768px) {
+    .main .header {
+        font-size: 34px;
+    }
+    .main .quote {
+        font-size: 43px;
+    }
+    .main .source {
+        font-size: 34px;
+    }
     .main .options {
         font-size: 34px;
     }
