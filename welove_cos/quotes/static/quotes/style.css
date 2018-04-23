@@ -92,26 +92,3 @@ body {
     color: #6d4f46;
     text-decoration: none;
 }
-
-/* Media specific & small screens */
-
-@media screen and (max-device-width: 768px) {
-    .main .header {
-        font-size: 34px;
-    }
-    .main .quote {
-        font-size: 43px;
-    }
-    .main .source {
-        font-size: 34px;
-    }
-    .main .title {
-        font-size: 45px;
-    }
-    .main .intro {
-        font-size: 30px;
-    }
-    .main .options {
-        font-size: 34px;
-    }
-}
