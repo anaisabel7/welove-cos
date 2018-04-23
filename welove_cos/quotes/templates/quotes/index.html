@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <div class="main">
-    <p class="title">City Of Sound</p>
+    <p class="title">{% if quotes_context %}{{quotes_context.common_origin|title}}{% else %}Quotes{% endif %}</p>
     <p class="intro">Check their</p>
     <p class="options">
         <span><a href="{{random_url}}">-- Random quote  --</a></span>

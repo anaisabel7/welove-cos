@@ -93,8 +93,41 @@ class DailyViewTest(QuoteReadyTestCase):
         self.assertContains(response, source_name.title())
         self.assertNotIn(self.quote_text, str(response.content))
 
-    def test_index_returns_daily_view(self):
+    def test_index_does_not_return_daily_view(self):
         self.create_quote(selected=True)
         response_index = self.client.get(reverse('index'))
         response_daily = self.client.get(reverse('daily'))
-        self.assertEqual(response_index.content, response_daily.content)
+        self.assertNotEqual(response_index.content, response_daily.content)
+
+
+class IndexViewTest(QuoteReadyTestCase):
+
+    def test_random_and_daily_urls_in_index(self):
+        response = self.client.get(reverse('index'))
+        daily_url = reverse('daily')
+        random_url = reverse('random')
+        self.assertContains(response, daily_url)
+        self.assertContains(response, random_url)
+
+    def test_no_context_processor_index(self):
+        templates = copy.deepcopy(settings.TEMPLATES)
+        for processor in templates[0]['OPTIONS']['context_processors']:
+            if 'quotes_processor' in processor:
+                templates[0]['OPTIONS']['context_processors'].remove(processor)
+
+        with self.settings(TEMPLATES=templates):
+            context = context_processors.quotes_processor(self)
+            response = self.client.get(reverse('index'))
+            self.assertContains(response, "Quotes")
+            self.assertNotIn(
+                context['quotes_context']['common_origin'],
+                str(response.content)
+            )
+
+    def test_context_processor_index(self):
+        context = context_processors.quotes_processor(self)
+        response = self.client.get(reverse('index'))
+        self.assertContains(
+            response,
+            context['quotes_context']['common_origin']
+        )
