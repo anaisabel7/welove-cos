@@ -79,6 +79,7 @@ body {
     padding-left: 15px;
     padding-right: 15px;
     font-style: italic;
+    white-space: nowrap;
 }
 .main .options a:link {
     color: #e0ebeb;
@@ -91,4 +92,15 @@ body {
 .main .options a:hover {
     color: #6d4f46;
     text-decoration: none;
+}
+
+/* Media specific & small screens */
+
+@media screen and (max-device-width: 768px) {
+    .main {
+        margin-top: 20px;
+    }
+    .main .header {
+        padding-bottom: 5px;
+    }
 }
