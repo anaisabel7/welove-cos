@@ -12,22 +12,6 @@ body {
     margin-top: 100px;
     margin: 100px 30px 30px 30px;
 }
-.main .home a:link {
-    color: #e0ebeb;
-    text-decoration: none;
-}
-.main .home a:visited {
-    color: #e0ebeb;
-    text-decoration: none;
-}
-.main .home a:hover {
-    color: #92b9b9;
-    text-decoration: none;
-}
-.main .home .fa-home {
-    font-size: 35px;
-    margin-top: 50px;
-}
 .main .header {
     font-size: 25px;
     padding-bottom: 15px;
@@ -56,6 +40,22 @@ body {
     color: #6d4f46;
     text-decoration: none;
     font-style: italic;
+}
+.main .home a:link {
+    color: #e0ebeb;
+    text-decoration: none;
+}
+.main .home a:visited {
+    color: #e0ebeb;
+    text-decoration: none;
+}
+.main .home a:hover {
+    color: #92b9b9;
+    text-decoration: none;
+}
+.main .home .fa-home {
+    font-size: 35px;
+    margin-top: 50px;
 }
 
 /* Index */
@@ -102,5 +102,11 @@ body {
     }
     .main .header {
         padding-bottom: 5px;
+    }
+    .main .link {
+        margin-top: 30px;
+    }
+    .main .home {
+        margin-top: 25px;
     }
 }
