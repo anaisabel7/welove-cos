@@ -1,3 +1,6 @@
+
+/* Common & Quotes */
+
 body {
     background: #260d26;
 }
@@ -53,7 +56,6 @@ body {
     color: #6d4f46;
     text-decoration: none;
     font-style: italic;
-
 }
 
 @media only screen and (max-device-width: 768px) {
@@ -65,5 +67,51 @@ body {
     }
     .main .source {
         font-size: 34px;
+    }
+}
+
+/* Index */
+
+.main .title {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size: 70px;
+}
+.main .options {
+    font-size: 25px;
+    list-style-type: none;
+}
+.main .options span {
+    text-align: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-style: italic;
+}
+.main .options a:link {
+    color: #e0ebeb;
+    text-decoration: none;
+}
+.main .options a:visited {
+    color: #e0ebeb;
+    text-decoration: none;
+}
+.main .options a:hover {
+    color: #6d4f46;
+    text-decoration: none;
+}
+.main .intro {
+    padding-bottom: 5px;
+    font-style: italic;
+    font-size: 25px;
+}
+
+@media only screen and (max-device-width: 768px) {
+    .main .options {
+        font-size: 34px;
+    }
+    .main .title {
+        font-size: 45px;
+    }
+    .main .intro {
+        font-size: 30px;
     }
 }

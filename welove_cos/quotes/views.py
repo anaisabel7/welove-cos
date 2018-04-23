@@ -19,7 +19,10 @@ def get_random_quote_or_none():
 
 def index(request):
     template = loader.get_template('quotes/index.html')
-    context = {}
+    context = {
+        'daily_url': reverse('daily'),
+        'random_url': reverse('random')
+    }
     return HttpResponse(template.render(context, request))
 
 
