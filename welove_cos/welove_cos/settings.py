@@ -144,3 +144,14 @@ CELERY_IMPORTS = ['quotes']
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+# import email_settings
+try:
+    from . import email_settings
+except ImportError:
+    raise ImportError(
+        "Cannot import email_settings.  See ../tools/create_email_settings.py"
+    )
+
+EMAIL_HOST_USER = email_settings.email
+EMAIL_HOST_PASSWORD = email_settings.password

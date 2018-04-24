@@ -10,3 +10,9 @@ For the scheduled tasks to work you will need to install the redis-server:
 ```
 sudo apt-get install redis-server
 ```
+
+You need to set up the email address to send emails from. To do so, go to the 'tools' folder and run:
+
+```
+python create_email_settings.py --email [your 'gmail' email address] --password [the password for that gmail account]
+```

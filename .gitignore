@@ -5,3 +5,5 @@ lib64
 pip-selfcheck.json
 pyvenv.cfg
 share
+welove_cos/welove_cos/email_settings.py
+welove_cos/welove_cos/__pycache__/
