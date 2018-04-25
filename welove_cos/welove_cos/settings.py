@@ -145,7 +145,7 @@ CELERY_IMPORTS = ['quotes']
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 
-# import email_settings
+# Email settings
 try:
     from . import email_settings
 except ImportError:
@@ -153,5 +153,8 @@ except ImportError:
         "Cannot import email_settings.  See ../tools/create_email_settings.py"
     )
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = email_settings.email
 EMAIL_HOST_PASSWORD = email_settings.password
+EMAIL_PORT = 587
