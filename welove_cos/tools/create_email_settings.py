@@ -11,11 +11,14 @@ def find_settings_file():
     return settings_path
 
 
+def check_for_gmail_email(email):
+    if "@gmail" not in email:
+        raise Exception("A 'gmail' email address is required.")
+
+
 def create_email_settings(email, password):
     settings_file_name = find_settings_file()
     f = open(settings_file_name, 'w+')
-    if "@gmail" not in email:
-        raise Exception("A 'gmail' email address is required.")
     f.write("email = '{}'\n".format(email))
     f.write("password = '{}'\n".format(password))
     f.close()
@@ -37,9 +40,11 @@ def main():
     parser.add_argument(
         '--env',
         action="store_true",
+        default=False,
         help="Store values as environment variables instead of in a file."
     )
     args = parser.parse_args()
+    check_for_gmail_email(args.email)
     if args.env:
         pass
     else:
