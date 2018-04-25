@@ -1,20 +1,28 @@
 import argparse
+import os
 
-SETTINGS_FILE_NAME = '../welove_cos/email_settings.py'
+
+def find_settings_file():
+
+    script_path = os.path.dirname(__file__)
+    if script_path:
+        script_path = "{}/".format(script_path)
+    settings_path = '{}../welove_cos/email_settings.py'.format(script_path)
+    return settings_path
 
 
 def create_email_settings(email, password):
-    f = open(SETTINGS_FILE_NAME, 'w+')
+    settings_file_name = find_settings_file()
+    f = open(settings_file_name, 'w+')
     if "@gmail" not in email:
         raise Exception("A 'gmail' email address is required.")
-    mystr = "email = '{}'\n".format(email)
-    print(mystr)
     f.write("email = '{}'\n".format(email))
     f.write("password = '{}'\n".format(password))
     f.close()
 
 
 def main():
+    print(find_settings_file())
     parser = argparse.ArgumentParser(
         description="Parse email and password values"
     )
