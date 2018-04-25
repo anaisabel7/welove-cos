@@ -16,3 +16,9 @@ You need to set up the email address to send emails from. To do so, run the crea
 ```
 python create_email_settings.py --email [your 'gmail' email address] --password [the password for that gmail account]
 ```
+When deploying on a Heroku server, a manual process of setting environment variables is required instead of the above. It can be done following the example below:
+```
+heroku config:set EMAIL_SETTINGS_USER="[your 'gmail' email address]"
+
+heroku config:set EMAIL_SETTINGS_PASSWORD="[the password for that gmail account]"
+```
