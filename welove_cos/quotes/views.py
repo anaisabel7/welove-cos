@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from .models import Quote
 
-from django.conf.settings import EMAIL_HOST_USER as email_user
+from django.conf import settings
 from django.core.mail import EmailMessage
 
 
@@ -22,6 +22,7 @@ def get_random_quote_or_none():
 
 def index(request):
 
+    email_user = settings.EMAIL_HOST_USER
     email = EmailMessage("New Page Load", "Someone entered!!", to=[email_user])
     email.send()
 
