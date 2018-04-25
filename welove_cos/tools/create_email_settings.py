@@ -21,8 +21,12 @@ def create_email_settings(email, password):
     f.close()
 
 
+def set_environment_variables(email, password):
+    os.environ["EMAIL_SETTINGS_USER"] = email
+    os.environ["EMAIL_SETTINGS_PASSWORD"] = password
+
+
 def main():
-    print(find_settings_file())
     parser = argparse.ArgumentParser(
         description="Parse email and password values"
     )
@@ -30,8 +34,16 @@ def main():
     parser.add_argument(
         '--password', type=str, help="Password for your gmail email address"
     )
+    parser.add_argument(
+        '--env',
+        action="store_true",
+        help="Store values as environment variables instead of in a file."
+    )
     args = parser.parse_args()
-    create_email_settings(email=args.email, password=args.password)
+    if args.env:
+        pass
+    else:
+        create_email_settings(email=args.email, password=args.password)
 
 if __name__ == "__main__":
 

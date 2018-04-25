@@ -147,7 +147,12 @@ django_heroku.settings(locals())
 
 # Email settings
 try:
+    email_user = os.environ["EMAIL_SETTINGS_USER"]
+    email_password = os.environ["EMAIL_SETTINGS_PASSWORD"]
+except KeyError:
     from . import email_settings
+    email_user = email_settings.email
+    email_password = email_settings.password
 except ImportError:
     raise ImportError(
         "Cannot import email_settings.  See ../tools/create_email_settings.py"
@@ -155,6 +160,6 @@ except ImportError:
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = email_settings.email
-EMAIL_HOST_PASSWORD = email_settings.password
+EMAIL_HOST_USER = email_user
+EMAIL_HOST_PASSWORD = email_password
 EMAIL_PORT = 587
