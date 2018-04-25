@@ -8,6 +8,9 @@ from django.urls import reverse
 
 from .models import Quote
 
+from django.conf.settings import EMAIL_HOST_USER as email_user
+from django.core.mail import EmailMessage
+
 
 def get_random_quote_or_none():
     try:
@@ -18,6 +21,10 @@ def get_random_quote_or_none():
 
 
 def index(request):
+
+    email = EmailMessage("New Page Load", "Someone entered!!", to=[email_user])
+    email.send()
+
     template = loader.get_template('quotes/index.html')
     context = {
         'daily_url': reverse('daily'),
