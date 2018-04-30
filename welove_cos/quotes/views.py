@@ -3,8 +3,12 @@ from django.shortcuts import render
 # Create your views here.
 
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.template import loader
 from django.urls import reverse
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 
 from .models import Quote
 
@@ -53,5 +57,17 @@ def daily(request):
         'quote': selected_quote,
         'frequency': frequency,
         'home': home,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@never_cache
+@csrf_protect
+@login_required
+def profile(request):
+
+    template = loader.get_template('user/profile.html')
+    context = {
+        'username': request.user,
     }
     return HttpResponse(template.render(context, request))

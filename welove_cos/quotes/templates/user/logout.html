@@ -1,0 +1,9 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class="main">
+    <p class="header">You are now logged out.</p>
+    <p class="link"><a href="{% url 'login' %}">Log in again</a></p>
+</div>

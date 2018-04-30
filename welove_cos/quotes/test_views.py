@@ -1,10 +1,10 @@
 import copy
 from django.conf import settings
 from django.urls import reverse
+from django.test import TestCase
 from mock import patch
 from .models import Quote
 from .tests import QuoteReadyTestCase
-from .views import random, daily
 from . import context_processors
 
 
@@ -100,7 +100,7 @@ class DailyViewTest(QuoteReadyTestCase):
         self.assertNotEqual(response_index.content, response_daily.content)
 
 
-class IndexViewTest(QuoteReadyTestCase):
+class IndexViewTest(TestCase):
 
     def test_random_and_daily_urls_in_index(self):
         response = self.client.get(reverse('index'))
@@ -131,3 +131,9 @@ class IndexViewTest(QuoteReadyTestCase):
             response,
             context['quotes_context']['common_origin']
         )
+
+
+class ProfileViewTest(TestCase):
+
+    def test_call_view(self):
+        response = self.client.get(reverse('profile'))

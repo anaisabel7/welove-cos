@@ -1,0 +1,10 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class="main">
+    <p class="header">This is your profile, {{ username|title }}!</p>
+    <p class="link"><a href="{% url 'password_change' %}">Change password</a></p>
+    <p class="link"><a href="{% url 'logout' %}">Would you like to log out now?</a></p>
+</div>
