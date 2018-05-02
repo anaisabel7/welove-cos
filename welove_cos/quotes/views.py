@@ -61,6 +61,11 @@ def daily(request):
     return HttpResponse(template.render(context, request))
 
 
+def create_user(request):
+    user = User.objects.create_user('nick', 'nick@nick.com', 'nickpass')
+    return HttpResponse("New user {} has been created??".format(user.username))
+
+
 @never_cache
 @csrf_protect
 @login_required
