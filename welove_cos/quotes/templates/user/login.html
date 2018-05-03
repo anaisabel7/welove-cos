@@ -1,8 +1,6 @@
-{% load static %}
+{% extends "base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+{% block content %}
 <div class="main">
     {% if form.errors %}
         <p>Your username and password didn't match. Please try again.</p>
@@ -32,4 +30,6 @@
         <input type="submit" value="login" />
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
+    {% block home %}{{ block.super }}{% endblock %}
 </div>
+{% endblock %}

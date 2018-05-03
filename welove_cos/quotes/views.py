@@ -42,7 +42,6 @@ def random(request):
     context = {
         'quote': quote,
         'frequency': frequency,
-        'home': home,
     }
     return HttpResponse(template.render(context, request))
 
@@ -59,7 +58,6 @@ def daily(request):
     context = {
         'quote': selected_quote,
         'frequency': frequency,
-        'home': home,
     }
     return HttpResponse(template.render(context, request))
 

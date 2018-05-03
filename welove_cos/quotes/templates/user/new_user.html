@@ -1,12 +1,12 @@
-{% load static %}
+{% extends "base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+{% block content %}
 <div class=main>
     <form action="new_user" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type="submit" value="Submit" />
     </form>
+    {% block home %}{{ block.super }}{% endblock %}
 </div>
+{% endblock %}
