@@ -2,13 +2,15 @@ from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from django.conf import settings
 from django.core.mail import EmailMessage
-from .models import Quote
+from .models import Quote, Profile
 
 
 def email_notification(title="hello", body="some text"):
-    email_user = settings.EMAIL_HOST_USER
-    email = EmailMessage(title, body, to=[email_user])
-    email.send()
+    subscribed_profiles = Profile.objects.filter(subscribed=True)
+    for profile in subscribed_profiles:
+        user_email = profile.user.email
+        email_to_send = EmailMessage(title, body, to=[user_email])
+        email_to_send.send()
 
 
 @shared_task

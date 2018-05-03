@@ -1,0 +1,12 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class=main>
+    <form action="new_user" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit" />
+    </form>
+</div>

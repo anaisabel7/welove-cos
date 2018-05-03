@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -18,4 +19,13 @@ class Quote(models.Model):
 
     def __str__(self):
         returned_str = "A quote from %s" % (self.source.name)
+        return returned_str
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    subscribed = models.BooleanField(default=False)
+
+    def __str__(self):
+        returned_str = "The profile of %s" % (self.user)
         return returned_str

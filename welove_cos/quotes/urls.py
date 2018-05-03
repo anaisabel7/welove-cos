@@ -6,7 +6,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('daily', views.daily, name='daily'),
     path('random', views.random, name='random'),
-    path('create_user', views.create_user, name='create_user'),
 ]
 
 # User / Auth
@@ -71,4 +70,5 @@ urlpatterns = urlpatterns + [
         name='reset_password_done'
     ),
     path('profile', views.profile, name='profile'),
+    path('new_user', views.new_user, name='new_user')
 ]

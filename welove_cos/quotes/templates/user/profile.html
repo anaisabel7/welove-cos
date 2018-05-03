@@ -4,7 +4,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <div class="main">
-    <p class="header">This is your profile, {{ username|title }}!</p>
+    <p class="header">This is your profile, {% if profile.user.first_name %}{{profile.user.first_name|title}}{% else %}{{ profile.user.username|title }}{% endif %}!</p>
+    <div class=main>
+        <form action="profile" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Apply changes" />
+        </form>
+    </div>
+    {% if changed %}
+        <p class="link">Changes applied</p>
+    {% endif %}
     <p class="link"><a href="{% url 'password_change' %}">Change password</a></p>
     <p class="link"><a href="{% url 'logout' %}">Would you like to log out now?</a></p>
 </div>
