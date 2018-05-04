@@ -14,4 +14,7 @@
             </a>
         </p>
     {% endblock %}
+    {% block user %}
+        <p class="link"><a href="/profile">{% if loggedin_user %}Visit your profile, {{loggedin_user|title}}{% else %}Log in and subscribe to daily quote emails.{% endif %}</a></p>
+    {% endblock %}
 {% endblock %}

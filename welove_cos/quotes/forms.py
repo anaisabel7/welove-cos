@@ -15,6 +15,9 @@ class UserForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
         }
+        help_texts = {
+            'username': None,
+        }
 
 
 class ProfileForm(forms.ModelForm):

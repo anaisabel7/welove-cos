@@ -16,6 +16,15 @@ from .models import Quote, Profile
 from .forms import UserForm, ProfileForm
 
 
+def add_loggedin_user_to_context(request, context):
+    current_user = request.user
+    if current_user.is_authenticated:
+        if current_user.first_name:
+            context['loggedin_user'] = current_user.first_name
+        else:
+            context['loggedin_user'] = current_user.username
+
+
 def get_random_quote_or_none():
     try:
         quote = Quote.objects.order_by('?')[0]
@@ -29,8 +38,10 @@ def index(request):
     template = loader.get_template('quotes/index.html')
     context = {
         'daily_url': reverse('daily'),
-        'random_url': reverse('random')
+        'random_url': reverse('random'),
+        'profile_url': reverse('profile')
     }
+    add_loggedin_user_to_context(request, context)
     return HttpResponse(template.render(context, request))
 
 
@@ -43,6 +54,7 @@ def random(request):
         'quote': quote,
         'frequency': frequency,
     }
+    add_loggedin_user_to_context(request, context)
     return HttpResponse(template.render(context, request))
 
 
@@ -59,6 +71,7 @@ def daily(request):
         'quote': selected_quote,
         'frequency': frequency,
     }
+    add_loggedin_user_to_context(request, context)
     return HttpResponse(template.render(context, request))
 
 
