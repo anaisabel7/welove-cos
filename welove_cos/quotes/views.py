@@ -7,7 +7,6 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.template import loader
-from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
@@ -36,17 +35,12 @@ def get_random_quote_or_none():
 def index(request):
 
     template = loader.get_template('quotes/index.html')
-    context = {
-        'daily_url': reverse('daily'),
-        'random_url': reverse('random'),
-        'profile_url': reverse('profile')
-    }
+    context = {}
     add_loggedin_user_to_context(request, context)
     return HttpResponse(template.render(context, request))
 
 
 def random(request):
-    home = reverse('index')
     frequency = 'random'
     quote = get_random_quote_or_none()
     template = loader.get_template('quotes/quotes.html')
@@ -59,7 +53,6 @@ def random(request):
 
 
 def daily(request):
-    home = reverse('index')
     frequency = 'daily'
     try:
         selected_quote = Quote.objects.filter(selected=True)[0]

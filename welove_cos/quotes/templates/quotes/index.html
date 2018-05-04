@@ -5,8 +5,8 @@
     <p class="title">{% if quotes_context %}{{quotes_context.common_origin|title}}{% else %}Quotes{% endif %}</p>
     <p class="intro">Check their</p>
     <p class="options">
-        <span><a href="{{random_url}}">-- Random quote  --</a></span>
-        <span><a href="{{daily_url}}">-- Daily quote --</a></span>
+        <span><a href="{% url 'random' %}">-- Random quote  --</a></span>
+        <span><a href="{% url 'daily' %}">-- Daily quote --</a></span>
     </p>
     {% block user %}{{ block.super }}{% endblock %}
 </div>
