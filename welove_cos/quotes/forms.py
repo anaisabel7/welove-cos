@@ -30,5 +30,8 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['subscribed']
+        labels = {
+            'subscribed': 'Subscribed to daily quote emails'
+        }
 
     field_order = ['first_name', 'subscribed']

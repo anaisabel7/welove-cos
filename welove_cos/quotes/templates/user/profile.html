@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="main">
-    <p class="header">This is your profile, {% if profile.user.first_name %}{{profile.user.first_name|title}}{% else %}{{ profile.user.username|title }}{% endif %}!</p>
+    <p class="header">This is your profile, {% if profile.user.first_name %}{{profile.user.first_name|title}}{% else %}{{ profile.user.username|title }}{% endif %}.</p>
     <form action="profile" method="post">
         {% csrf_token %}
         {{ form.as_p }}
