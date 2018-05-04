@@ -3,10 +3,20 @@ from celery import shared_task
 from django.conf import settings
 from django.core.mail import EmailMessage
 from .models import Quote, Profile
+from .context_processors import COMMON_ORIGIN, TYPE_OF_SOURCE
 
 
-def email_notification(title="hello", body="some text"):
+@shared_task
+def send_daily_quote_emails():
     subscribed_profiles = Profile.objects.filter(subscribed=True)
+    title = "Your daily quote from {}".format(COMMON_ORIGIN)
+    quote = Quote.objects.filter(selected=True)[0]
+    body = "Today's quote from {} is:\n\n\"{}\"\n\nfrom the {} {}.".format(
+        COMMON_ORIGIN,
+        quote.quote_text,
+        TYPE_OF_SOURCE,
+        quote.source
+    )
     for profile in subscribed_profiles:
         user_email = profile.user.email
         email_to_send = EmailMessage(title, body, to=[user_email])
@@ -22,7 +32,5 @@ def get_random_quote():
     random_quote = Quote.objects.order_by('?')[0]
     random_quote.selected = True
     random_quote.save()
-
-    email_notification("New Random Quote", random_quote.quote_text)
 
     print("{} - Selected".format(random_quote.quote_text))
