@@ -50,6 +50,9 @@ class SourceTest(QuoteReadyTestCase):
             field = Source._meta.get_field(each)
             self.assertTrue(isinstance(field, fields[each]))
 
+        field_count_plus_id_and_rel_quote = len(Source._meta.get_fields())
+        self.assertEqual(field_count_plus_id_and_rel_quote, len(fields)+2)
+
         source_name_max_length = Source._meta.get_field('name').max_length
         self.assertEqual(source_name_max_length, 100)
 
@@ -72,6 +75,9 @@ class ProfileTest(TestCase):
             self.assertTrue(hasattr(Profile, each))
             field = Profile._meta.get_field(each)
             self.assertTrue(isinstance(field, fields[each]))
+
+        field_count_plus_id_autofield = len(Profile._meta.get_fields())
+        self.assertEqual(field_count_plus_id_autofield, len(fields)+1)
 
         user_related_model = Profile._meta.get_field('user').related_model
         self.assertEqual(user_related_model, User)
