@@ -68,6 +68,7 @@ def daily(request):
     return HttpResponse(template.render(context, request))
 
 
+@sensitive_post_parameters()
 @never_cache
 @csrf_protect
 @login_required
@@ -77,7 +78,6 @@ def profile(request):
 
     if request.method == 'POST':
         form = ProfileForm(request.POST)
-        print(request.POST)
         users_profile = Profile.objects.filter(user=current_user)[0]
         context = {
             'profile': users_profile,
@@ -85,7 +85,6 @@ def profile(request):
         }
 
         if form.is_valid():
-            users_profile = Profile.objects.filter(user=current_user)[0]
             users_profile.subscribed = form.cleaned_data['subscribed']
             current_user.first_name = form.cleaned_data['first_name']
             users_profile.save()
