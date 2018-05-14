@@ -20,14 +20,32 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e*n7&$5k)587^#)$&v#qw4xl8kyb-*0pb)v0k1)losjnuireiu'
+try:
+    SECRET_KEY = os.environ["SECRET_KEY"]
+except KeyError:
+    try:
+        from . import secret_settings
+        SECRET_KEY = secret_settings.secret_key
+    except ImportError:
+        print(
+            "WARNING: Cannot import secret_settings. Using development values."
+        )
+        # SECURITY WARNING: keep the secret key used in production secret!
+        SECRET_KEY = 'e*n7&$5k)587^#)$&v#qw4xl8kyb-*0pb)v0k1)losjnuireiu'
+
+ALLOWED_HOSTS = ["*"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# ALLOWED_HOSTS = ["127.0.0.1", ".herokuapp.com"]
-ALLOWED_HOSTS = ["*"]
+if not DEBUG:
+
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = 'DENY'
 
 
 # Application definition
@@ -145,9 +163,6 @@ except KeyError:
 
 CELERY_IMPORTS = ['quotes']
 
-# Activate Django-Heroku.
-django_heroku.settings(locals())
-
 # Email settings
 try:
     email_user = os.environ["EMAIL_SETTINGS_USER"]
@@ -166,3 +181,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = email_user
 EMAIL_HOST_PASSWORD = email_password
 EMAIL_PORT = 587
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
