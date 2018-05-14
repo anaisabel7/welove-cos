@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_celery_beat',
     'raven.contrib.django.raven_compat',
     'quotes',
@@ -146,6 +147,8 @@ USE_TZ = True
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile'
+
+SITE_ID = 1
 
 
 # Static files (CSS, JavaScript, Images)
