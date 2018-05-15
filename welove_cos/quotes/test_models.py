@@ -1,6 +1,8 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.test import TestCase
 from mock import patch
-from .models import Quote, Source
+from .models import Quote, Source, Profile
 from .tests import QuoteReadyTestCase
 
 
@@ -48,13 +50,45 @@ class SourceTest(QuoteReadyTestCase):
             field = Source._meta.get_field(each)
             self.assertTrue(isinstance(field, fields[each]))
 
-        quote_text_max_length = Source._meta.get_field('name').max_length
-        self.assertEqual(quote_text_max_length, 100)
+        field_count_plus_id_and_rel_quote = len(Source._meta.get_fields())
+        self.assertEqual(field_count_plus_id_and_rel_quote, len(fields)+2)
 
-        quote_text_max_length = Source._meta.get_field('link').max_length
-        self.assertEqual(quote_text_max_length, 300)
+        source_name_max_length = Source._meta.get_field('name').max_length
+        self.assertEqual(source_name_max_length, 100)
+
+        source_link_max_length = Source._meta.get_field('link').max_length
+        self.assertEqual(source_link_max_length, 300)
 
     def test_str_method(self):
         source = self.create_source()
         source_str = source.__str__()
         self.assertEqual(source_str, source.name)
+
+
+class ProfileTest(TestCase):
+    def test_profile_fields(self):
+        fields = {
+            'user': models.OneToOneField,
+            'subscribed': models.BooleanField
+        }
+        for each in fields:
+            self.assertTrue(hasattr(Profile, each))
+            field = Profile._meta.get_field(each)
+            self.assertTrue(isinstance(field, fields[each]))
+
+        field_count_plus_id_autofield = len(Profile._meta.get_fields())
+        self.assertEqual(field_count_plus_id_autofield, len(fields)+1)
+
+        user_related_model = Profile._meta.get_field('user').related_model
+        self.assertEqual(user_related_model, User)
+
+        subscribed_default = Profile._meta.get_field(
+            'subscribed'
+        )._get_default()
+        self.assertEqual(subscribed_default, False)
+
+    def test_str_method(self):
+        user = User.objects.create_user('username', 'email@email.com')
+        profile = Profile.objects.create(user=user)
+        profile_str = profile.__str__()
+        self.assertEqual(profile_str, "The profile of {}".format(user))

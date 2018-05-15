@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class=main>
+    <p class="link">Input your data to create a new user.</p>
+    <form action="new_user" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+    {% block home %}{{ block.super }}{% endblock %}
+</div>
+{% endblock %}

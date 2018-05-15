@@ -1,5 +1,6 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
-from .models import Quote, Source
+from .models import Quote, Source, Profile
 
 # Create your tests here.
 
@@ -27,3 +28,27 @@ class QuoteReadyTestCase(TestCase):
             selected=selected
         )
         return quote_object
+
+
+class UserReadyTestCase(TestCase):
+
+    username = 'awesomeuser'
+    email = 'awesome@email.com'
+    password = 'password'
+
+    def create_and_login_user(
+        self, username=username, email=email, password=password
+    ):
+        self.user = User.objects.create_user(username, email, password)
+        self.client.login(username=username, password=password)
+
+    def create_user_login_and_profile(
+        self,
+        username=username, email=email, password=password, subscribed=False
+    ):
+        self.create_and_login_user(
+            username=username, email=email, password=password
+        )
+        self.profile = Profile.objects.create(
+            user=self.user, subscribed=subscribed
+        )

@@ -1,6 +1,11 @@
-from mock import patch
-from .models import Quote
-from .tasks import get_random_quote
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.urls import reverse
+from mock import patch, call
+from .context_processors import COMMON_ORIGIN, TYPE_OF_SOURCE
+from .models import Quote, Profile
+from .tasks import get_random_quote, send_daily_quote_emails
+from . import tasks
 from .tests import QuoteReadyTestCase
 
 
@@ -44,3 +49,98 @@ class RandomQuoteTest(QuoteReadyTestCase):
             previously_not_selected.quote_text,
             currently_selected.quote_text
         )
+
+
+class DailyQuoteEmailsTest(QuoteReadyTestCase):
+
+    def setUp(self):
+        self.quote = self.create_quote(text="Selected quote", selected=True)
+        self.user = User.objects.create_user(
+            "subscribedpal",
+            "subscribedpal@email.com"
+        )
+        Profile.objects.create(
+            user=self.user,
+            subscribed=True
+        )
+        self.title = "Your daily quote from {}".format(COMMON_ORIGIN)
+        self.body = "Today's quote from {} is:\n\n\"{}\"\n\nfrom the {} {}.".format(
+            COMMON_ORIGIN,
+            self.quote.quote_text,
+            TYPE_OF_SOURCE,
+            self.quote.source
+        )
+        self.full_url = "https://{}{}".format(
+            settings.SITE_DOMAIN, reverse('profile')
+        )
+        self.closing_msg = "\n\nVisit {} to change your email preferences.".format(
+            self.full_url
+        )
+        self.body = self.body + self.closing_msg
+
+    @patch.object(tasks, 'EmailMessage')
+    def test_general_email_content(self, mock_email_message):
+        send_daily_quote_emails()
+        mock_email_message.assert_called_with(
+            self.title,
+            self.body,
+            to=[self.user.email]
+        )
+
+    @patch.object(tasks.EmailMessage, 'send')
+    def test_email_sent(self, mock_email_send):
+        send_daily_quote_emails()
+        mock_email_send.assert_called_once()
+
+    @patch.object(tasks, 'EmailMessage')
+    def test_only_selected_quote_sent(self, mock_email_message):
+        self.quote.selected = False
+        self.quote.save()
+        new_quote = self.create_quote(
+            text="Another quote that we selected",
+            selected=True
+        )
+        all_quotes = Quote.objects.all()
+        self.assertEqual(len(all_quotes), 2)
+        self.assertEqual(all_quotes[0], self.quote)
+
+        new_body = "Today's quote from {} is:\n\n\"{}\"\n\nfrom the {} {}.".format(
+            COMMON_ORIGIN,
+            new_quote.quote_text,
+            TYPE_OF_SOURCE,
+            new_quote.source
+        )
+        new_body = new_body + self.closing_msg
+
+        send_daily_quote_emails()
+        original_call = call(
+            self.title, self.body, to=[self.user.email]
+        )
+        new_call = call(
+            self.title, new_body, to=[self.user.email]
+        )
+        mock_calls = mock_email_message.mock_calls
+        self.assertFalse(original_call in mock_calls)
+        self.assertTrue(new_call in mock_calls)
+
+    @patch.object(tasks, 'EmailMessage')
+    def test_email_sent_to_subscribed_user_only(self, mock_email_message):
+        uninterested_user = User.objects.create_user(
+            "uninterestedpal",
+            "uninterestedpal@email.com"
+        )
+        Profile.objects.create(
+            user=uninterested_user
+        )
+
+        send_daily_quote_emails()
+        self.assertEqual(mock_email_message.call_count, 1)
+        original_call = call(
+            self.title, self.body, to=[self.user.email]
+        )
+        uninterested_call = call(
+            self.title, self.body, to=[uninterested_user.email]
+        )
+        all_calls = mock_email_message.mock_calls
+        self.assertTrue(original_call in all_calls)
+        self.assertFalse(uninterested_call in all_calls)

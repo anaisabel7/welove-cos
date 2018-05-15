@@ -1,13 +1,13 @@
-{% load static %}
+{% extends "base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'quotes/style.css' %}" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+{% block content %}
 <div class="main">
     <p class="title">{% if quotes_context %}{{quotes_context.common_origin|title}}{% else %}Quotes{% endif %}</p>
     <p class="intro">Check their</p>
     <p class="options">
-        <span><a href="{{random_url}}">-- Random quote  --</a></span>
-        <span><a href="{{daily_url}}">-- Daily quote --</a></span>
+        <span><a href="{% url 'random' %}">-- Random quote  --</a></span>
+        <span><a href="{% url 'daily' %}">-- Daily quote --</a></span>
     </p>
+    {% block user %}{{ block.super }}{% endblock %}
 </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main">
+    <p class="header">This is your profile, {% if profile.user.first_name %}{{profile.user.first_name|title}}{% else %}{{ profile.user.username|title }}{% endif %}.</p>
+    <form action="profile" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Apply changes" />
+    </form>
+    {% if changed %}
+        <p class="link">Changes applied</p>
+    {% endif %}
+    <p class="link"><a href="{% url 'password_change' %}">Change password</a></p>
+    <p class="link"><a href="{% url 'logout' %}">Would you like to log out now?</a></p>
+    {% block home %}{{ block.super }}{% endblock %}
+</div>
+{% endblock %}
