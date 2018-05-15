@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.urls import reverse
 from mock import patch, call
 from .context_processors import COMMON_ORIGIN, TYPE_OF_SOURCE
 from .models import Quote, Profile
@@ -68,6 +70,13 @@ class DailyQuoteEmailsTest(QuoteReadyTestCase):
             TYPE_OF_SOURCE,
             self.quote.source
         )
+        self.full_url = "https://{}{}".format(
+            settings.SITE_DOMAIN, reverse('profile')
+        )
+        self.closing_msg = "\n\nVisit {} to change your email preferences.".format(
+            self.full_url
+        )
+        self.body = self.body + self.closing_msg
 
     @patch.object(tasks, 'EmailMessage')
     def test_general_email_content(self, mock_email_message):
@@ -101,6 +110,7 @@ class DailyQuoteEmailsTest(QuoteReadyTestCase):
             TYPE_OF_SOURCE,
             new_quote.source
         )
+        new_body = new_body + self.closing_msg
 
         send_daily_quote_emails()
         original_call = call(

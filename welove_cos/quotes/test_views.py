@@ -467,6 +467,46 @@ class NewUserViewTest(UserReadyTestCase):
             self.client.post(reverse('new_user'), data=post_data)
             mock_http_redirect.assert_called_with('profile')
 
+    @patch.object(views, 'UserForm')
+    def test_called_function_to_send_welcome_email(self, mock_user_form):
+        post_data = {
+                'username': self.username,
+                'email': self.email,
+                'password': self.password
+            }
+
+        class FakeUserForm(object):
+            cleaned_data = post_data
+
+            def is_valid():
+                return True
+
+        def side_effect_of_mock(*args, **kwargs):
+            return FakeUserForm
+
+        mock_user_form.side_effect = side_effect_of_mock
+        with patch.object(views, 'send_new_user_email') as mock_send_email:
+            self.client.post(reverse('new_user'), data=post_data)
+            mock_send_email.assert_called_with(self.username, self.email)
+
+
+class NewUserEmailSenderTest(UserReadyTestCase):
+    @patch.object(views, 'EmailMessage')
+    def test_email_sent_with_correct_content(self, mock_email_message):
+        title = "Welcome, {}!".format(self.username)
+        intro = "Welcome to {}{}!\nWe are glad to have you onboard.\n".format(
+            "https://", settings.SITE_DOMAIN
+        )
+        ending = "If you did not just create a user with us, please {}".format(
+            "let us know at {} so we can remove your email {}".format(
+                settings.EMAIL_HOST_USER, "from our database."
+            )
+        )
+        body = "{}{}".format(intro, ending)
+        views.send_new_user_email(self.username, self.email)
+        mock_email_message.assert_called_with(title, body, to=[self.email])
+        mock_email_message().send.assert_called()
+
     # The common FakeUserForm and what goes with it should probably go in a
     # separate function as it is used quite a few times
 
