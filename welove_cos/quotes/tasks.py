@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
-from django.contrib.sites.models import Site
+from django.conf import settings
 from django.core.mail import EmailMessage
 from django.urls import reverse
 from .models import Quote, Profile
@@ -18,9 +18,9 @@ def send_daily_quote_emails():
         TYPE_OF_SOURCE,
         quote.source
     )
-    site_domain = Site.objects.get_current().domain
-    closing_msg = "\n\nVisit {}{} to change your email preferences.".format(
-        site_domain, reverse('profile')
+    full_url = "https://{}{}".format(settings.SITE_DOMAIN, reverse('profile'))
+    closing_msg = "\n\nVisit {} to change your email preferences.".format(
+        full_url
     )
     body = body + closing_msg
     for profile in subscribed_profiles:
