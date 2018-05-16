@@ -22,7 +22,7 @@
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
     <p class="link"><a href="{% url 'lost_password' %}">If you forgot your password, get help here.</a></p>
-    <p class="link"><a href="{% url 'new_user' %}">Are you a new user? Create an account here.</a></p>
+    <p class="link stackedlink"><a href="{% url 'new_user' %}">Are you a new user? Create an account here.</a></p>
     {% block home %}{{ block.super }}{% endblock %}
 </div>
 {% endblock %}
