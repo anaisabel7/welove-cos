@@ -16,6 +16,7 @@ class Quote(models.Model):
     quote_text = models.CharField(max_length=600)
     selected = models.BooleanField(default=False)
     source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)
+    popularity = models.IntegerField(default=0)
 
     def __str__(self):
         returned_str = "A quote from %s" % (self.source.name)

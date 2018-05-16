@@ -47,5 +47,5 @@ class PollForm(forms.Form):
         ],
         required=True,
         widget=forms.RadioSelect,
-        label='Choose one of these quotes'
+        label='Choose the quote you like the most'
     )

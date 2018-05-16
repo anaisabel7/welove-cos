@@ -82,7 +82,7 @@ def poll(request):
             while (list_of_choices and
                     quote.quote_text in [x[1] for x in list_of_choices]):
                 quote = get_random_quote_or_none()
-            list_of_choices.append((quote, quote.quote_text))
+            list_of_choices.append((quote.id, quote.quote_text))
         return list_of_choices
 
     context = {}
@@ -90,10 +90,16 @@ def poll(request):
     if request.method == 'POST':
         form = PollForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data['quote_choice'])
+            quote_id = form.cleaned_data['quote_choice']
+            chosen_quote = Quote.objects.filter(id=quote_id)[0]
+            chosen_quote.popularity = chosen_quote.popularity + 1
+            chosen_quote.save()
+        else:
+            context['errors'] = True
         context['done'] = True
 
     PollForm.declared_fields['quote_choice'].choices = get_new_choices()
+    print(PollForm.declared_fields['quote_choice'].choices)
     form = PollForm()
     context['form'] = form
     return HttpResponse(template.render(context, request))

@@ -2,10 +2,17 @@
 
 {% block content %}
 <div class="main">
-<form method="post" action="{% url 'poll' %}">
+    {% if errors %}
+        <p class='link'>Your previous answer could not be stored correctly</p>
+    {% elif done %}
+        <p class='link'>Thank you for your answer to the previous poll. Here is another one!</p>
+    {% else %}
+        <p class='link'>Try answering one of our polls about your favourite quotes.</p>
+    {% endif %}
+    <form method="post" action="{% url 'poll' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="submit" />
+        <input type="submit" value="Submit" />
     </form>
 </div>
 {% endblock %}
