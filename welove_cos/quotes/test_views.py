@@ -6,7 +6,7 @@ from django.http import QueryDict, HttpResponseRedirect
 from django.urls import reverse
 from django.template import loader
 from django.test import TestCase, RequestFactory
-from mock import patch
+from mock import patch, call
 from .forms import ProfileForm
 from .models import Quote, Profile
 from .tests import QuoteReadyTestCase, UserReadyTestCase
@@ -137,6 +137,124 @@ class IndexViewTest(TestCase):
             response,
             context['quotes_context']['common_origin']
         )
+
+
+class PollViewTest(UserReadyTestCase, QuoteReadyTestCase):
+    def test_bottom_link_displayed_correctly(self):
+        self.create_and_login_user()
+        response = self.client.get(reverse('poll'))
+        self.assertContains(
+            response, "Would you like to go back to your profile?"
+        )
+        self.assertContains(response, reverse('profile'))
+
+    def test_submit_button_displayed(self):
+        self.create_and_login_user()
+        response = self.client.get(reverse('poll'))
+        self.assertContains(response, '<input type="submit" value="Submit" />')
+
+    def test_default_quotes_if_less_than_4_quotes_available(self):
+        self.create_and_login_user()
+        self.create_quote()
+        response = self.client.get(reverse('poll'))
+        self.assertContains(response, "no available quotes")
+        self.assertContains(response, "a problem with the poll")
+
+    def test_quotes_displayed_if_4_quotes_available(self):
+        self.create_and_login_user()
+        texts = ['COS rocks', 'Jordan rocks', 'Lacey rocks', 'Andrew rocks']
+        for text in texts:
+            self.create_quote(text=text)
+        response = self.client.get(reverse('poll'))
+        for text in texts:
+            self.assertContains(response, text)
+
+    def test_different_header_messages_displayed_correctly(self):
+        self.create_and_login_user()
+        initial_response = self.client.get(reverse('poll'))
+        self.assertContains(
+            initial_response,
+            "Try answering one of our polls about your favourite quotes."
+        )
+        self.assertNotIn(
+            "previous answer could not be stored",
+            str(initial_response.content)
+        )
+        self.assertNotIn(
+            "answering the previous poll",
+            str(initial_response.content)
+        )
+        my_context = initial_response.context[0].flatten()
+        my_context['done'] = True
+        template = loader.get_template('polls/poll.html')
+        response_content = template.render(my_context)
+        self.assertIn(
+            "Thank you answering the previous poll. Here is another one!",
+            response_content
+        )
+        self.assertNotIn(
+            "previous answer could not be stored", response_content
+        )
+        self.assertNotIn(
+            "Try answering one of our polls", response_content
+        )
+        my_context['errors'] = True
+        response_content = template.render(my_context)
+        self.assertIn(
+            "Your previous answer could not be stored. Try this one.",
+            response_content
+        )
+        self.assertNotIn(
+            "answering the previous poll", response_content
+        )
+        self.assertNotIn(
+            "Try answering one of our polls", response_content
+        )
+
+    @patch.object(views, 'PollForm')
+    def test_post_method_valid_form(self, mock_poll_form):
+        self.create_and_login_user()
+        quote = self.create_quote()
+        initial_popularity = quote.popularity
+
+        post_data = {'quote_choice': str(quote.id)}
+
+        class FakePollForm(object):
+
+            cleaned_data = post_data
+
+            def is_valid():
+                return True
+
+        def side_effect_of_mock(*args, **kwargs):
+            return FakePollForm
+
+        mock_poll_form.side_effect = side_effect_of_mock
+
+        response = self.client.post(reverse('poll'), data=post_data)
+        form_data = QueryDict('', mutable=True)
+        form_data.update(post_data)
+        the_call = call(form_data)
+        self.assertIn(the_call, mock_poll_form.mock_calls)
+        final_popularity = Quote.objects.filter(id=quote.id)[0].popularity
+        self.assertEqual(final_popularity, initial_popularity+1)
+        self.assertTrue(response.context['done'])
+
+    @patch.object(views, 'PollForm')
+    def test_post_method_valid_form(self, mock_poll_form):
+        self.create_and_login_user()
+
+        class FakePollForm(object):
+
+            def is_valid():
+                return False
+
+        def side_effect_of_mock(*args, **kwargs):
+            return FakePollForm
+
+        mock_poll_form.side_effect = side_effect_of_mock
+        response = self.client.post(reverse('poll'), data={})
+        self.assertTrue(response.context['errors'])
 
 
 class ProfileViewTest(UserReadyTestCase):

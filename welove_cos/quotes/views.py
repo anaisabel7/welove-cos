@@ -77,6 +77,8 @@ def poll(request):
     def get_new_choices():
         list_of_choices = []
         no_of_quote_choices = 4
+        if Quote.objects.count() < no_of_quote_choices:
+            return PollForm.declared_fields['quote_choice'].choices
         for i in range(no_of_quote_choices):
             quote = get_random_quote_or_none()
             while (list_of_choices and
@@ -99,7 +101,6 @@ def poll(request):
         context['done'] = True
 
     PollForm.declared_fields['quote_choice'].choices = get_new_choices()
-    print(PollForm.declared_fields['quote_choice'].choices)
     form = PollForm()
     context['form'] = form
     return HttpResponse(template.render(context, request))

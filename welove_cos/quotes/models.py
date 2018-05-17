@@ -13,7 +13,7 @@ class Source(models.Model):
 
 
 class Quote(models.Model):
-    quote_text = models.CharField(max_length=600)
+    quote_text = models.CharField(max_length=600, unique=True)
     selected = models.BooleanField(default=False)
     source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)
     popularity = models.IntegerField(default=0)
