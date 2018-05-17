@@ -140,9 +140,13 @@ class IndexViewTest(TestCase):
 
 
 class PollViewTest(UserReadyTestCase, QuoteReadyTestCase):
-    def test_bottom_link_displayed_correctly(self):
+    def test_bottom_links_displayed_correctly(self):
         self.create_and_login_user()
         response = self.client.get(reverse('poll'))
+        self.assertContains(
+            response, "See poll results"
+        )
+        self.assertContains(response, reverse('popularity'))
         self.assertContains(
             response, "Would you like to go back to your profile?"
         )

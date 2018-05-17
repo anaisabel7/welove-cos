@@ -14,7 +14,8 @@
         {{ form.as_p }}
         <input type="submit" value="Submit" />
     </form>
-    <p class="link"><a href="{% url 'profile' %}">Would you like to go back to your profile?</a></p>
+    <p class="link"><a href="{% url 'popularity' %}">See poll results</a></p>
+    <p class="link stackedlink"><a href="{% url 'profile' %}">Would you like to go back to your profile?</a></p>
     {% block home %}{{ block.super }}{% endblock %}
 </div>
 {% endblock %}

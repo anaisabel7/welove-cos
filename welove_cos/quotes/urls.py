@@ -7,6 +7,7 @@ urlpatterns = [
     path('daily', views.daily, name='daily'),
     path('random', views.random, name='random'),
     path('poll', views.poll, name='poll'),
+    path('popularity', views.popularity, name='popularity')
 ]
 
 # User / Auth

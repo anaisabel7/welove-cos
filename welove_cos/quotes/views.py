@@ -71,6 +71,16 @@ def daily(request):
 
 
 @login_required
+def popularity(request):
+    template = loader.get_template('polls/popularity.html')
+    quotes_by_popularity = Quote.objects.order_by('popularity').reverse()
+    context = {
+        'quotes_by_popularity': quotes_by_popularity
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
 def poll(request):
     template = loader.get_template('polls/poll.html')
 

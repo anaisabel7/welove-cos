@@ -136,3 +136,7 @@ body {
 .main .stackedlink {
     margin-top: 30px;
 }
+
+.main .link .makebold {
+    font-weight: bold;
+}
