@@ -1,10 +1,13 @@
+import builtins
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
-from mock import patch, call
+from mock import patch, call, MagicMock
 from .context_processors import COMMON_ORIGIN, TYPE_OF_SOURCE
 from .models import Quote, Profile
-from .tasks import get_random_quote, send_daily_quote_emails
+from .tasks import (
+    get_random_quote, send_daily_quote_emails, control_popularity
+)
 from . import tasks
 from .tests import QuoteReadyTestCase
 
@@ -144,3 +147,38 @@ class DailyQuoteEmailsTest(QuoteReadyTestCase):
         all_calls = mock_email_message.mock_calls
         self.assertTrue(original_call in all_calls)
         self.assertFalse(uninterested_call in all_calls)
+
+
+class ControlPopularityTest(QuoteReadyTestCase):
+
+    @patch.object(Quote.objects, 'order_by', return_value=['a'])
+    def test_quotes_ordered_by_popularity(self, mock_quotes_order):
+        quote = self.create_quote()
+
+        class FakeOrderBy(object):
+            reverse = MagicMock(return_value=[quote])
+
+        def side_effect_of_mock(*args, **kwargs):
+            return FakeOrderBy
+
+        mock_quotes_order.side_effect = side_effect_of_mock
+        control_popularity()
+        mock_quotes_order.assert_called_with('popularity')
+        mock_quotes_order().reverse.assert_called()
+
+    @patch.object(builtins, 'print')
+    def test_popularities_halved_if_popularity_too_high(self, mock_print):
+        quote = self.create_quote()
+        quote.popularity = 5
+        quote.save()
+        control_popularity()
+        mock_print.assert_not_called()
+        self.assertEqual(Quote.objects.all()[0].popularity, quote.popularity)
+
+        quote.popularity = 2000000000
+        quote.save()
+        control_popularity()
+        mock_print.assert_called_with(
+            "WARNING: All quote popularities are now being divided by half"
+        )
+        self.assertEqual(Quote.objects.all()[0].popularity, quote.popularity/2)
