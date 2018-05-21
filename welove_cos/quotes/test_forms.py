@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.test import TestCase
-from .forms import UserForm, ProfileForm
+from .forms import UserForm, ProfileForm, PollForm
 from .models import Profile
 
 
@@ -101,3 +101,39 @@ class ProfileFormTest(TestCase):
             expected_order,
             ProfileForm.field_order
         )
+
+
+class PollFormTest(TestCase):
+    def test_fields(self):
+        expected_fields = {
+            'quote_choice': forms.ChoiceField,
+        }
+        actual_fields = PollForm.base_fields
+        for each_key in expected_fields:
+            self.assertTrue(each_key in actual_fields)
+            self.assertTrue(isinstance(
+                actual_fields[each_key],
+                expected_fields[each_key]
+            ))
+
+    def test_quote_choice_parameters(self):
+        expected_choices = [
+            (1, 'There is a problem with the poll,'),
+            (2, 'there are no available quotes.'),
+            (3, 'There is nothing to see here.'),
+            (4, 'We are sorry :( ')
+        ]
+        actual_choices = PollForm.declared_fields['quote_choice'].choices
+        self.assertEqual(expected_choices, actual_choices)
+
+        expected_required = True
+        actual_required = PollForm.declared_fields['quote_choice'].required
+        self.assertEqual(expected_required, actual_required)
+
+        expected_widget_class = forms.RadioSelect
+        actial_widget = PollForm.declared_fields['quote_choice']. widget
+        self.assertTrue(isinstance(actial_widget, expected_widget_class))
+
+        expected_label = 'Choose the quote you like the most'
+        actual_label = PollForm.declared_fields['quote_choice'].label
+        self.assertEqual(expected_label, actual_label)

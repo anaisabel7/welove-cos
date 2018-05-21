@@ -8,6 +8,18 @@ from .context_processors import COMMON_ORIGIN, TYPE_OF_SOURCE
 
 
 @shared_task
+def control_popularity():
+    most_popular_quote = Quote.objects.order_by('popularity').reverse()[0]
+    highest_popularity = most_popular_quote.popularity
+    safe_integerfield_value = 2000000000
+    if highest_popularity >= safe_integerfield_value:
+        print("WARNING: All quote popularities are now being divided by half")
+        for quote in Quote.objects.all():
+            quote.popularity = quote.popularity/2
+            quote.save()
+
+
+@shared_task
 def send_daily_quote_emails():
     subscribed_profiles = Profile.objects.filter(subscribed=True)
     title = "Your daily quote from {}".format(COMMON_ORIGIN)

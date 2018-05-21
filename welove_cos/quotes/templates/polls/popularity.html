@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main">
+    <p class="header">Quotes by order of popularity</p>
+    {% for quote in quotes_by_popularity %}
+        <p class="link stackedlink">From <span class="makebold">{{quote.source.name}}</span>: {{quote.quote_text}}</p>
+    {% endfor %}
+     <p class="link"><a href="{% url 'poll' %}">-- Answer one of our polls --</a></p>
+    {% block home %}{{ block.super }}{% endblock %}
+</div>
+{% endblock %}

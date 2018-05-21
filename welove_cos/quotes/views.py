@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
 from .models import Quote, Profile
-from .forms import UserForm, ProfileForm
+from .forms import UserForm, ProfileForm, PollForm
 
 
 def add_loggedin_user_to_context(request, context):
@@ -67,6 +67,52 @@ def daily(request):
         'frequency': frequency,
     }
     add_loggedin_user_to_context(request, context)
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def popularity(request):
+    template = loader.get_template('polls/popularity.html')
+    quotes_by_popularity = Quote.objects.order_by('popularity').reverse()
+    context = {
+        'quotes_by_popularity': quotes_by_popularity
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def poll(request):
+    template = loader.get_template('polls/poll.html')
+
+    def get_new_choices():
+        list_of_choices = []
+        no_of_quote_choices = 4
+        if Quote.objects.count() < no_of_quote_choices:
+            return PollForm.declared_fields['quote_choice'].choices
+        for i in range(no_of_quote_choices):
+            quote = get_random_quote_or_none()
+            while (list_of_choices and
+                    quote.quote_text in [x[1] for x in list_of_choices]):
+                quote = get_random_quote_or_none()
+            list_of_choices.append((quote.id, quote.quote_text))
+        return list_of_choices
+
+    context = {}
+
+    if request.method == 'POST':
+        form = PollForm(request.POST)
+        if form.is_valid():
+            quote_id = form.cleaned_data['quote_choice']
+            chosen_quote = Quote.objects.filter(id=quote_id)[0]
+            chosen_quote.popularity = chosen_quote.popularity + 1
+            chosen_quote.save()
+        else:
+            context['errors'] = True
+        context['done'] = True
+
+    PollForm.declared_fields['quote_choice'].choices = get_new_choices()
+    form = PollForm()
+    context['form'] = form
     return HttpResponse(template.render(context, request))
 
 

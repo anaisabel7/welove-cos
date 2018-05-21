@@ -94,6 +94,26 @@ body {
     text-decoration: none;
 }
 
+/* Forms */
+
+.main form {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 20px;
+}
+.main form ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.main form li {
+    padding-top: 5px;
+}
+.main input {
+    font-size: 18px;
+    font-weight: bold;
+    color: #260d26;
+}
+
 /* Media specific & small screens */
 
 @media screen and (max-device-width: 768px) {
@@ -109,4 +129,14 @@ body {
     .main .home .fa-home {
         margin-top: 25px;
     }
+}
+
+/* Specifics */
+
+.main .stackedlink {
+    margin-top: 30px;
+}
+
+.main .link .makebold {
+    font-weight: bold;
 }

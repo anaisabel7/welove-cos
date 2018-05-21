@@ -35,3 +35,17 @@ class ProfileForm(forms.ModelForm):
         }
 
     field_order = ['first_name', 'subscribed']
+
+
+class PollForm(forms.Form):
+    quote_choice = forms.ChoiceField(
+        choices=[
+            (1, 'There is a problem with the poll,'),
+            (2, 'there are no available quotes.'),
+            (3, 'There is nothing to see here.'),
+            (4, 'We are sorry :( ')
+        ],
+        required=True,
+        widget=forms.RadioSelect,
+        label='Choose the quote you like the most'
+    )

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main">
+    {% if errors %}
+        <p class='header'>Your previous answer could not be stored. Try this one.</p>
+    {% elif done %}
+        <p class='header'>Thank you answering the previous poll. Here is another one!</p>
+    {% else %}
+        <p class='header'>Try answering one of our polls about your favourite quotes.</p>
+    {% endif %}
+    <form method="post" action="{% url 'poll' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+    <p class="link"><a href="{% url 'popularity' %}">See poll results</a></p>
+    <p class="link stackedlink"><a href="{% url 'profile' %}">Would you like to go back to your profile?</a></p>
+    {% block home %}{{ block.super }}{% endblock %}
+</div>
+{% endblock %}

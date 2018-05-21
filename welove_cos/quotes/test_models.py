@@ -11,7 +11,8 @@ class QuoteTest(QuoteReadyTestCase):
         fields = {
             'quote_text': models.CharField,
             'source': models.ForeignKey,
-            'selected': models.BooleanField
+            'selected': models.BooleanField,
+            'popularity': models.IntegerField
         }
         for name in fields:
             self.assertTrue(hasattr(Quote, name))
@@ -29,6 +30,12 @@ class QuoteTest(QuoteReadyTestCase):
 
         quote_text_max_length = Quote._meta.get_field('quote_text').max_length
         self.assertEqual(quote_text_max_length, 600)
+
+        quote_text_unique = Quote._meta.get_field('quote_text').unique
+        self.assertEqual(quote_text_unique, True)
+
+        popularity_default = Quote._meta.get_field('popularity')._get_default()
+        self.assertEqual(selected_default, 0)
 
     def test_str_method(self):
         quote = self.create_quote()
