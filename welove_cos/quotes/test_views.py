@@ -261,6 +261,32 @@ class PollViewTest(UserReadyTestCase, QuoteReadyTestCase):
         self.assertTrue(response.context['errors'])
 
 
+class PopularityViewTest(UserReadyTestCase, QuoteReadyTestCase):
+
+    def test_header_and_link_at_the_bottom_displayed(self):
+        self.create_and_login_user()
+        self.create_quote()
+
+        response = self.client.get(reverse('popularity'))
+        self.assertContains(response, "Quotes by order of popularity")
+        self.assertContains(response, "-- Answer one of our polls --")
+        self.assertContains(response, reverse('poll'))
+
+    def test_quotes_sorted_by_popularity(self):
+        self.create_and_login_user()
+        popular_quote = self.create_quote(text="The best quote")
+        unpopular_quote = self.create_quote(text="The worst quote")
+
+        popular_quote.popularity = popular_quote.popularity + 1
+        response = self.client.get(reverse('popularity'))
+        str_response = str(response.content)
+        index_popular_quote = str_response.find(popular_quote.quote_text)
+        index_unpopular_quote = str_response.find(unpopular_quote.quote_text)
+        self.assertContains(response, popular_quote.quote_text)
+        self.assertContains(response, unpopular_quote.quote_text)
+        self.assertTrue(index_popular_quote < index_unpopular_quote)
+
+
 class ProfileViewTest(UserReadyTestCase):
 
     def test_login_required(self):
