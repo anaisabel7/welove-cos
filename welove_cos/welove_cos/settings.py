@@ -20,23 +20,27 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
 try:
     SECRET_KEY = os.environ["SECRET_KEY"]
 except KeyError:
     try:
         from . import secret_settings
         SECRET_KEY = secret_settings.secret_key
-    except ImportError:
+    except ImportError as e:
         print(
             "WARNING: Cannot import secret_settings. Using development values."
         )
+        if not DEBUG:
+            raise Exception(
+                "Development value of SECRET_KEY cannot be used in production."
+            )
         # SECURITY WARNING: keep the secret key used in production secret!
         SECRET_KEY = 'e*n7&$5k)587^#)$&v#qw4xl8kyb-*0pb)v0k1)losjnuireiu'
 
 ALLOWED_HOSTS = ["*"]
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
 if not DEBUG:
 
