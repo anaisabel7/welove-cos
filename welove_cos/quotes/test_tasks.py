@@ -1,4 +1,3 @@
-import builtins
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -166,19 +165,21 @@ class ControlPopularityTest(QuoteReadyTestCase):
         mock_quotes_order.assert_called_with('popularity')
         mock_quotes_order().reverse.assert_called()
 
-    @patch.object(builtins, 'print')
-    def test_popularities_halved_if_popularity_too_high(self, mock_print):
+    @patch.object(tasks, 'warning_email_admin')
+    def test_popularities_halved_if_popularity_too_high(
+        self, mock_warning_email
+    ):
         quote = self.create_quote()
         quote.popularity = 5
         quote.save()
         control_popularity()
-        mock_print.assert_not_called()
+        mock_warning_email.assert_not_called()
         self.assertEqual(Quote.objects.all()[0].popularity, quote.popularity)
 
         quote.popularity = 2000000000
         quote.save()
         control_popularity()
-        mock_print.assert_called_with(
+        mock_warning_email.assert_called_with(
             "WARNING: All quote popularities are now being divided by half"
         )
         self.assertEqual(Quote.objects.all()[0].popularity, quote.popularity/2)

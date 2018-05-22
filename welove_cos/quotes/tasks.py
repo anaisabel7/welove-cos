@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.urls import reverse
 from .models import Quote, Profile
+from .common import warning_email_admin
 from .context_processors import COMMON_ORIGIN, TYPE_OF_SOURCE
 
 
@@ -13,7 +14,9 @@ def control_popularity():
     highest_popularity = most_popular_quote.popularity
     safe_integerfield_value = 2000000000
     if highest_popularity >= safe_integerfield_value:
-        print("WARNING: All quote popularities are now being divided by half")
+        warning_email_admin(
+            "WARNING: All quote popularities are now being divided by half"
+        )
         for quote in Quote.objects.all():
             quote.popularity = quote.popularity/2
             quote.save()
