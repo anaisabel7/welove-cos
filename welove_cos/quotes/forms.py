@@ -29,7 +29,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['subscribed']
+        fields = ['subscribed', 'favourite_quote']
         labels = {
             'subscribed': 'Subscribed to daily quote emails'
         }
@@ -48,4 +48,13 @@ class PollForm(forms.Form):
         required=True,
         widget=forms.RadioSelect,
         label='Choose the quote you like the most'
+    )
+
+
+class FavouriteQuoteForm(forms.Form):
+    set_favourite = forms.BooleanField(
+        required=False,
+        initial=False,
+        widget=forms.CheckboxInput(attrs={'onclick': 'this.form.submit();'}),
+        label=''
     )

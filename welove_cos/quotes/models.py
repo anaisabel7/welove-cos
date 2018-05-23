@@ -26,6 +26,9 @@ class Quote(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     subscribed = models.BooleanField(default=False)
+    favourite_quote = models.ForeignKey(
+        Quote, on_delete=models.SET_NULL, blank=True, null=True
+    )
 
     def __str__(self):
         returned_str = "The profile of %s" % (self.user)

@@ -3,10 +3,20 @@
 {% block content %}
 <div class="main">
     <p class="header">Quotes by order of popularity</p>
-    {% for quote in quotes_by_popularity %}
-        <p class="link stackedlink">From <span class="makebold">{{quote.source.name}}</span>: {{quote.quote_text}}</p>
+    {% if errors %}
+        <p class="link stackedlink">Your favourite could not be set.</p>
+    {% elif favourite_set %}
+        <p class="link stackedlink">Favourite quote set!</p>
+    {% endif %}
+    {% for form in all_forms %}
+        <form action="popularity" method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{ form.set_favourite.label }}" name="quote_text">
+            <p class="link stackedlink">For <span class="makebold">{{ form.set_favourite.help_text }}</span>: {{ form.set_favourite.label }} -- fav? {{form.set_favourite}}</p>
+        </form>
     {% endfor %}
      <p class="link"><a href="{% url 'poll' %}">-- Answer one of our polls --</a></p>
+     <p class="link stackedlink"><a href="{% url 'profile' %}">Would you like to go back to your profile?</a></p>
     {% block home %}{{ block.super }}{% endblock %}
 </div>
 {% endblock %}
