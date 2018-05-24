@@ -10,7 +10,7 @@ def warning_email_admin(warning_text="WARNING: Unknown warning"):
     body_intro = "A new warning was detected in {}.\n".format(
         settings.SITE_DOMAIN
     )
-    body_middle = "This is its content:\n{}\n".format(
+    body_middle = "This is its content:\n\"{}\"\n".format(
         warning_text
     )
     body_ending = "Warnings often do not need you to take extra actions."

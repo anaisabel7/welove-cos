@@ -84,6 +84,14 @@ class DailyViewTest(QuoteReadyTestCase):
             response = self.client.get(reverse('daily'))
             mock_quotes_order_by.assert_called_with("?")
 
+    def test_warning_admin_email_sent_if_no_selected_quote(self):
+        self.create_quote()
+        with patch.object(views, 'warning_email_admin') as mock_warning_email:
+            response = self.client.get(reverse('daily'))
+            warning_text = "WARNING: Selected quote not found {}".format(
+                "for daily view. Random quote chosen instead.")
+            mock_warning_email.assert_called_with(warning_text=warning_text)
+
     def test_displays_only_selected_quote(self):
         self.create_quote()
 
@@ -752,6 +760,9 @@ class NewUserViewTest(UserReadyTestCase):
             self.client.post(reverse('new_user'), data=post_data)
             mock_send_email.assert_called_with(self.username, self.email)
 
+    # The common FakeUserForm and what goes with it should probably go in a
+    # separate function as it is used quite a few times
+
 
 class NewUserEmailSenderTest(UserReadyTestCase):
     @patch.object(views, 'EmailMessage')
@@ -769,9 +780,6 @@ class NewUserEmailSenderTest(UserReadyTestCase):
         views.send_new_user_email(self.username, self.email)
         mock_email_message.assert_called_with(title, body, to=[self.email])
         mock_email_message().send.assert_called()
-
-    # The common FakeUserForm and what goes with it should probably go in a
-    # separate function as it is used quite a few times
 
 
 class BaseContentTest(UserReadyTestCase):
