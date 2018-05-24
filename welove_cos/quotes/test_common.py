@@ -20,14 +20,14 @@ class WarningEmailAdminTest(TestCase):
         intro = "A new warning was detected in {}.\n".format(
             settings.SITE_DOMAIN
         )
-        middle = "This is its content:\nHey! You should take a look here!\n"
+        middle = "This is its content:\n\"Hey! You should take a look here\"\n"
         ending = "Warnings often do not need you to take extra actions."
         body = "{}{}{}".format(
             intro, middle, ending
         )
 
         common.warning_email_admin(
-            warning_text="Hey! You should take a look here!"
+            warning_text="Hey! You should take a look here"
         )
         mock_email.assert_called_with(
             title, body, to=[settings.EMAIL_HOST_USER]

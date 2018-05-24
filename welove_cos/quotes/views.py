@@ -15,6 +15,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.list import ListView
 from django.utils import timezone
 
+from .common import warning_email_admin
 from .models import Quote, Profile
 from .forms import UserForm, ProfileForm, PollForm, FavouriteQuoteForm
 
@@ -62,6 +63,10 @@ def daily(request):
         selected_quote = Quote.objects.filter(selected=True)[0]
     except IndexError:
         selected_quote = get_random_quote_or_none()
+
+        warning_text = "WARNING: Selected quote not found {}".format(
+            "for daily view. Random quote chosen instead.")
+        warning_email_admin(warning_text=warning_text)
 
     template = loader.get_template('quotes/quotes.html')
     context = {
