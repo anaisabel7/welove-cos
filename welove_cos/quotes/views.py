@@ -81,7 +81,6 @@ def popularity(request):
         form = FavouriteQuoteForm(request.POST)
         if form.is_valid():
             selected_quote_text = request.POST['quote_text']
-            print(selected_quote_text)
             selected_quote = Quote.objects.filter(
                 quote_text=selected_quote_text
             )[0]
@@ -95,9 +94,6 @@ def popularity(request):
     all_forms = []
     quotes_by_popularity = Quote.objects.order_by('-popularity')
     for quote in quotes_by_popularity:
-        html_text = "From <span class='makebold>{}</span>: {}".format(
-                quote.source.name, quote.quote_text
-            )
         FavouriteQuoteForm.declared_fields[
             'set_favourite'].label = quote.quote_text
         FavouriteQuoteForm.declared_fields[
