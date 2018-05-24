@@ -5,8 +5,24 @@
     <p class="header">This is your profile, {% if profile.user.first_name %}{{profile.user.first_name|title}}{% else %}{{ profile.user.username|title }}{% endif %}.</p>
     <form action="profile" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <p>
+            {{ form.first_name.errors }}
+            {{ form.first_name.label_tag }}
+            {{ form.first_name }}
+        </p>
+        <p>
+            {{ form.subscribed.errors }}
+            {{ form.subscribed.label_tag }}
+            {{ form.subscribed }}
+        </p>
         <input type="submit" value="Apply changes" />
+    </form>
+    <form action="{% url 'popularity' %}">
+        <p class="header middleheader">Favourite quote:</p>
+        <p class="link stackedlink">
+            {{ profile.favourite_quote.quote_text }}
+        </p>
+        <input type="submit" value="Change favourite quote" />
     </form>
     {% if changed %}
         <p class="link">Changes applied</p>

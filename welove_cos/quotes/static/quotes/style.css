@@ -140,3 +140,8 @@ body {
 .main .link .makebold {
     font-weight: bold;
 }
+
+.main .middleheader {
+    padding-top: 10px;
+    padding-bottom: 0px;
+}

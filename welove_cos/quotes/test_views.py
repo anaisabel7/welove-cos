@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.template import loader
 from django.test import TestCase, RequestFactory
 from mock import patch, call
-from .forms import ProfileForm
+from .forms import ProfileForm, FavouriteQuoteForm
 from .models import Quote, Profile
 from .tests import QuoteReadyTestCase, UserReadyTestCase
 from . import context_processors
@@ -263,6 +263,12 @@ class PollViewTest(UserReadyTestCase, QuoteReadyTestCase):
 
 class PopularityViewTest(UserReadyTestCase, QuoteReadyTestCase):
 
+    def create_three_quotes(self):
+        a_quote = self.create_quote(text="The best quote")
+        self.create_quote(text="A mediocre quote")
+        self.create_quote(text="The worst quote")
+        return a_quote
+
     def test_header_and_link_at_the_bottom_displayed(self):
         self.create_and_login_user()
         self.create_quote()
@@ -272,7 +278,7 @@ class PopularityViewTest(UserReadyTestCase, QuoteReadyTestCase):
         self.assertContains(response, "-- Answer one of our polls --")
         self.assertContains(response, reverse('poll'))
 
-    def test_quotes_sorted_by_popularity(self):
+    def test_quotes_displayed_by_popularity(self):
         self.create_and_login_user()
         popular_quote = self.create_quote(text="The best quote")
         unpopular_quote = self.create_quote(text="The worst quote")
@@ -285,6 +291,115 @@ class PopularityViewTest(UserReadyTestCase, QuoteReadyTestCase):
         self.assertContains(response, popular_quote.quote_text)
         self.assertContains(response, unpopular_quote.quote_text)
         self.assertTrue(index_popular_quote < index_unpopular_quote)
+
+    def test_all_forms_displayed(self):
+        self.create_and_login_user()
+        self.create_three_quotes()
+        response = self.client.get(reverse('popularity'))
+        response_str = str(response.content)
+        response_forms = response_str.split('</form>')[:-1]
+        no_quotes = Quote.objects.count()
+        self.assertEqual(len(response_forms), no_quotes)
+        for response_form in response_forms:
+            self.assertIn(
+                '<form action="popularity" method="post">',
+                response_form
+            )
+
+            hidden_input = [
+                '<input type="hidden"',
+                'name="quote_text"'
+            ]
+            for chunk in hidden_input:
+                self.assertIn(chunk, response_form)
+
+            checkbox_input = [
+                '<input type="checkbox"',
+                'name="set_favourite"',
+                'id="id_set_favourite"',
+                'onclick="this.form.submit();"'
+
+            ]
+            for chunk in checkbox_input:
+                self.assertIn(chunk, response_form)
+        self.assertIn('all_forms', response.context)
+        self.assertEqual(len(response.context['all_forms']), no_quotes)
+
+    def test_label_and_help_text_set(self):
+        original_label = FavouriteQuoteForm.declared_fields[
+            'set_favourite'].label
+        original_help_text = FavouriteQuoteForm.declared_fields[
+            'set_favourite'].help_text
+        self.create_and_login_user()
+        source = self.create_source(name="Common knowledge")
+        quote = self.create_quote(text="Alternative quote", source=source)
+        self.client.get(reverse('popularity'))
+        new_label = FavouriteQuoteForm.declared_fields[
+            'set_favourite'].label
+        new_help_text = FavouriteQuoteForm.declared_fields[
+            'set_favourite'].help_text
+        self.assertEqual(new_label, quote.quote_text)
+        self.assertEqual(new_help_text, quote.source.name)
+        self.assertNotEqual(original_label, new_label)
+        self.assertNotEqual(original_help_text, new_help_text)
+
+    @patch.object(views, 'FavouriteQuoteForm')
+    def test_FavouriteQuoteForm_called_get(self, mock_fav_quote_form):
+        self.create_and_login_user()
+        self.create_three_quotes()
+        response = self.client.get(reverse('popularity'))
+        no_quotes = Quote.objects.count()
+        all_calls = mock_fav_quote_form.mock_calls
+        empty_call = call()
+        calls_without_args = [x for x in all_calls if x == empty_call]
+        self.assertEqual(len(calls_without_args), no_quotes)
+
+    @patch.object(views, 'FavouriteQuoteForm')
+    def test_FavouriteQuoteForm_called_post_errors(self, mock_fav_quote_form):
+        self.create_and_login_user()
+        self.create_three_quotes()
+
+        class FakeFavQuoteForm(object):
+            def is_valid():
+                return False
+
+        def side_effect_of_mock(*args, **kwargs):
+            return FakeFavQuoteForm
+
+        mock_fav_quote_form.side_effect = side_effect_of_mock
+        post_data = {
+            'quote_text': "Text of the selected quote"
+        }
+        response = self.client.post(reverse('popularity'), data=post_data)
+        self.assertIn('errors', response.context)
+        self.assertTrue(response.context['errors'])
+        querry_data = QueryDict('', mutable=True)
+        querry_data.update(post_data)
+        self.assertEqual(mock_fav_quote_form.mock_calls[0], call(querry_data))
+
+    @patch.object(views, 'FavouriteQuoteForm')
+    def test_FavouriteQuoteForm_called_post_valid(self, mock_fav_quote_form):
+        self.create_user_login_and_profile()
+        some_quote = self.create_three_quotes()
+
+        class FakeFavQuoteForm(object):
+            def is_valid():
+                return True
+
+        def side_effect_of_mock(*args, **kwargs):
+            return FakeFavQuoteForm
+
+        mock_fav_quote_form.side_effect = side_effect_of_mock
+        post_data = {
+            'quote_text': some_quote.quote_text
+        }
+        response = self.client.post(reverse('popularity'), data=post_data)
+        self.assertIn('favourite_set', response.context)
+        self.assertTrue(response.context['favourite_set'])
+        users_profile = Profile.objects.filter(user=self.user)[0]
+        self.assertEqual(
+            some_quote, users_profile.favourite_quote
+        )
 
 
 class ProfileViewTest(UserReadyTestCase):

@@ -19,14 +19,19 @@ class QuoteTest(QuoteReadyTestCase):
             field = Quote._meta.get_field(name)
             self.assertTrue(isinstance(field, fields[name]))
 
-        field_count_plus_id_autofield = len(Quote._meta.get_fields())
-        self.assertEqual(field_count_plus_id_autofield, len(fields)+1)
+        field_count_plus_id_and_rel_profile = len(Quote._meta.get_fields())
+        self.assertEqual(field_count_plus_id_and_rel_profile, len(fields)+2)
 
         selected_default = Quote._meta.get_field('selected')._get_default()
         self.assertEqual(selected_default, False)
 
         source_related_model = Quote._meta.get_field('source').related_model
         self.assertEqual(source_related_model, Source)
+
+        source_on_delete = Quote._meta.get_field(
+            'source'
+        ).remote_field.on_delete
+        self.assertEqual(source_on_delete, models.CASCADE)
 
         quote_text_max_length = Quote._meta.get_field('quote_text').max_length
         self.assertEqual(quote_text_max_length, 600)
@@ -76,7 +81,8 @@ class ProfileTest(TestCase):
     def test_profile_fields(self):
         fields = {
             'user': models.OneToOneField,
-            'subscribed': models.BooleanField
+            'subscribed': models.BooleanField,
+            'favourite_quote': models.ForeignKey,
         }
         for each in fields:
             self.assertTrue(hasattr(Profile, each))
@@ -88,6 +94,22 @@ class ProfileTest(TestCase):
 
         user_related_model = Profile._meta.get_field('user').related_model
         self.assertEqual(user_related_model, User)
+
+        fav_quote_related_model = Profile._meta.get_field(
+            'favourite_quote'
+        ).related_model
+        self.assertEqual(fav_quote_related_model, Quote)
+
+        fav_quote_blank = Profile._meta.get_field('favourite_quote').blank
+        self.assertEqual(fav_quote_blank, True)
+
+        fav_quote_null = Profile._meta.get_field('favourite_quote').null
+        self.assertEqual(fav_quote_null, True)
+
+        fav_quote_on_delete = Profile._meta.get_field(
+            'favourite_quote'
+        ).remote_field.on_delete
+        self.assertEqual(fav_quote_on_delete, models.SET_NULL)
 
         subscribed_default = Profile._meta.get_field(
             'subscribed'

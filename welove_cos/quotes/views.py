@@ -12,9 +12,11 @@ from django.template import loader
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic.list import ListView
+from django.utils import timezone
 
 from .models import Quote, Profile
-from .forms import UserForm, ProfileForm, PollForm
+from .forms import UserForm, ProfileForm, PollForm, FavouriteQuoteForm
 
 
 def add_loggedin_user_to_context(request, context):
@@ -73,10 +75,40 @@ def daily(request):
 @login_required
 def popularity(request):
     template = loader.get_template('polls/popularity.html')
-    quotes_by_popularity = Quote.objects.order_by('popularity').reverse()
-    context = {
-        'quotes_by_popularity': quotes_by_popularity
-    }
+    context = {}
+
+    if request.method == 'POST':
+        form = FavouriteQuoteForm(request.POST)
+        if form.is_valid():
+            selected_quote_text = request.POST['quote_text']
+            selected_quote = Quote.objects.filter(
+                quote_text=selected_quote_text
+            )[0]
+            users_profile = Profile.objects.filter(user=request.user)[0]
+            users_profile.favourite_quote = selected_quote
+            users_profile.save()
+            context['favourite_set'] = True
+        else:
+            context['errors'] = True
+
+    all_forms = []
+    quotes_by_popularity = Quote.objects.order_by('-popularity')
+    for quote in quotes_by_popularity:
+        FavouriteQuoteForm.declared_fields[
+            'set_favourite'].label = quote.quote_text
+        FavouriteQuoteForm.declared_fields[
+            'set_favourite'].help_text = quote.source.name
+        if 'favourite_set' in context:
+            if quote == selected_quote:
+                FavouriteQuoteForm.declared_fields[
+                    'set_favourite'].initial = True
+            else:
+                FavouriteQuoteForm.declared_fields[
+                    'set_favourite'].initial = False
+        form = FavouriteQuoteForm()
+        all_forms.append(form)
+
+    context['all_forms'] = all_forms
     return HttpResponse(template.render(context, request))
 
 
