@@ -13,7 +13,7 @@
         <form action="popularity" method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ form.set_favourite.label }}" name="quote_text">
-            <p class="link stackedlink">For <span class="makebold">{{ form.set_favourite.help_text }}</span>: {{ form.set_favourite.label }} {{form.set_favourite}}</p>
+            <p class="link stackedlink">From {% if form.set_favourite.help_text.link %}<a href="{{ form.set_favourite.help_text.link }}">{% endif %}<span class="makebold">{{ form.set_favourite.help_text }}</span>{% if form.set_favourite.help_text.link %}</a>{% endif %}: {{ form.set_favourite.label }} {{form.set_favourite}}</p>
         </form>
     {% endfor %}
      <p class="link"><a href="{% url 'poll' %}">-- Answer one of our polls --</a></p>
