@@ -333,6 +333,24 @@ class PopularityViewTest(UserReadyTestCase, QuoteReadyTestCase):
         self.assertIn('all_forms', response.context)
         self.assertEqual(len(response.context['all_forms']), no_quotes)
 
+    def test_source_link_displayed_if_available(self):
+        self.create_and_login_user()
+        source_link = "fakelink.com"
+        linked_source = self.create_source(link=source_link)
+        self.create_quote(source=linked_source)
+        response = self.client.get(reverse('popularity'))
+        self.assertContains(response, 'From <a href="{}"'.format(source_link))
+        self.assertContains(response, "</span></a>:")
+
+    def test_source_link_not_displayed_if_not_available(self):
+        self.create_and_login_user()
+        unlinked_source = self.create_source()
+        self.create_quote(source=unlinked_source)
+        response = self.client.get(reverse('popularity'))
+        self.assertContains(response, 'From <span')
+        self.assertNotIn('From <a ', str(response.content))
+        self.assertNotIn("</span></a>:", str(response.content))
+
     def test_label_and_help_text_set(self):
         original_label = FavouriteQuoteForm.declared_fields[
             'set_favourite'].label
@@ -347,7 +365,7 @@ class PopularityViewTest(UserReadyTestCase, QuoteReadyTestCase):
         new_help_text = FavouriteQuoteForm.declared_fields[
             'set_favourite'].help_text
         self.assertEqual(new_label, quote.quote_text)
-        self.assertEqual(new_help_text, quote.source.name)
+        self.assertEqual(new_help_text, quote.source)
         self.assertNotEqual(original_label, new_label)
         self.assertNotEqual(original_help_text, new_help_text)
 

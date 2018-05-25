@@ -139,6 +139,7 @@ body {
 
 .main .link .makebold {
     font-weight: bold;
+    font-style: normal;
 }
 
 .main .middleheader {

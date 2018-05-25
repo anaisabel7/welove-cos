@@ -102,7 +102,7 @@ def popularity(request):
         FavouriteQuoteForm.declared_fields[
             'set_favourite'].label = quote.quote_text
         FavouriteQuoteForm.declared_fields[
-            'set_favourite'].help_text = quote.source.name
+            'set_favourite'].help_text = quote.source
         if 'favourite_set' in context:
             if quote == selected_quote:
                 FavouriteQuoteForm.declared_fields[
