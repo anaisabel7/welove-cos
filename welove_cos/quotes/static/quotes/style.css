@@ -114,6 +114,21 @@ body {
     color: #260d26;
 }
 
+/* Message */
+
+.message {
+    text-align: center;
+    background: #f8ecf8;
+    border: 5px double #260d26;
+    padding: 10px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 18px;
+    color: #260d26;
+}
+.message .init {
+    font-weight: bold;
+}
+
 /* Media specific & small screens */
 
 @media screen and (max-device-width: 768px) {

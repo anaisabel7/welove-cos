@@ -33,3 +33,19 @@ class Profile(models.Model):
     def __str__(self):
         returned_str = "The profile of %s" % (self.user)
         return returned_str
+
+
+class Message(models.Model):
+    message_text = models.TextField()
+    displayed = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        # Only one Message instance can be 'displayed'
+        if self.displayed:
+            Message.objects.filter(displayed=True).update(displayed=False)
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        returned_str = "Site message: {}".format(self.message_text)
+        return returned_str

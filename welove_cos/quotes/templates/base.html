@@ -6,6 +6,13 @@
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
 
+{% if message_context and message_context.message %}
+<div class="message">
+    <p class="init">Important message:</p>
+    <p>{{ message_context.message }}</p>
+</div>
+{% endif %}
+
 {% block content %}
     {% block home %}
         <p class="home">
