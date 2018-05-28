@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.test import TestCase
 from mock import patch
-from .models import Quote, Source, Profile
+from .models import Quote, Source, Profile, Message
 from .tests import QuoteReadyTestCase
 
 
@@ -121,3 +121,39 @@ class ProfileTest(TestCase):
         profile = Profile.objects.create(user=user)
         profile_str = profile.__str__()
         self.assertEqual(profile_str, "The profile of {}".format(user))
+
+
+class MessageTest(TestCase):
+
+    def test_message_fields(self):
+        fields = {
+            'message_text': models.TextField,
+            'displayed': models.BooleanField
+        }
+        for each in fields:
+            self.assertTrue(hasattr(Message, each))
+            field = Message._meta.get_field(each)
+            self.assertTrue(isinstance(field, fields[each]))
+
+        displayed_default = Message._meta.get_field(
+            'displayed').default
+        self.assertEqual(displayed_default, False)
+
+    def test_str_method(self):
+        message = Message.objects.create(message_text="hey")
+        message_str = message.__str__()
+        self.assertEqual(message_str, "Site message: hey")
+
+    @patch.object(Message.objects, "filter")
+    def test_save_method(self, mock_filter):
+        message = Message.objects.create(message_text="hey")
+        message.displayed = False
+        message.message_text = "New text"
+        message.save()
+        mock_filter.assert_not_called()
+        self.assertEqual(Message.objects.all()[0].message_text, "New text")
+        message.displayed = True
+        message.save()
+        self.assertEqual(Message.objects.all()[0].displayed, True)
+        mock_filter.assert_called_with(displayed=True)
+        mock_filter().update.assert_called_with(displayed=False)

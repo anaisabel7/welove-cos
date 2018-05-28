@@ -89,14 +89,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "quotes.context_processors.quotes_processor",
+                "quotes.context_processors.message_processor"
             ],
         },
     },
 ]
-
-TEMPLATES[0]['OPTIONS']['context_processors'].append(
-        "quotes.context_processors.quotes_processor"
-    )
 
 WSGI_APPLICATION = 'welove_cos.wsgi.application'
 
