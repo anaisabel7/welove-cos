@@ -8,10 +8,11 @@ from django.template import loader
 from django.test import TestCase, RequestFactory
 from mock import patch, call
 from .forms import ProfileForm, FavouriteQuoteForm
-from .models import Quote, Profile
+from .models import Quote, Profile, Message
 from .tests import QuoteReadyTestCase, UserReadyTestCase
 from . import context_processors
 from . import views
+from . import urls
 
 
 class RandomViewTest(QuoteReadyTestCase):
@@ -800,19 +801,65 @@ class NewUserEmailSenderTest(UserReadyTestCase):
         mock_email_message().send.assert_called()
 
 
-class BaseContentTest(UserReadyTestCase):
+class BaseContentTest(UserReadyTestCase, QuoteReadyTestCase):
+
+    def test_message_in_all_pages(self):
+        pages = [x.name for x in urls.urlpatterns]
+
+        # Testint logout page last to not logout the user for other tests
+        pages.remove('logout')
+        pages = pages + ['logout']
+
+        # Reset password requires specific call with args. Done below
+        pages.remove('reset_password')
+
+        self.create_user_login_and_profile()
+        self.create_quote()
+        message_text = "Pay attention. This is important"
+        Message.objects.create(
+            message_text=message_text,
+            displayed=True
+        )
+        for page in pages:
+            response = self.client.get(reverse(page))
+            self.assertContains(response, message_text)
+
+        response = self.client.get(reverse(
+            'reset_password', kwargs={
+                'uidb64': 'Nw',
+                'token': '4w3-813b21d8950ad39c5f28'
+            }
+        ))
+        self.assertContains(response, message_text)
+
     def test_home_in_all_appropriate_pages(self):
         self.create_and_login_user()
-        # Missing problematic pages to reverse, like password change and reset
-        pages_with_home = [
-            'daily', 'random', 'profile', 'login', 'logout', 'new_user',
-            'lost_password', 'lost_password_done', 'reset_password_done',
-        ]
+        self.create_quote()
+        pages_with_home = [x.name for x in urls.urlpatterns]
+        pages_with_home.remove('index')
+
+        # Testint logout page last to not logout the user for other tests
+        pages_with_home.remove('logout')
+        pages_with_home = pages_with_home + ['logout']
+
+        # Reset password requires specific call with args. Done below
+        pages_with_home.remove('reset_password')
+
         for page in pages_with_home:
             response = self.client.get(reverse(page))
             self.assertTrue(response.status_code, 200)
             self.assertContains(response, reverse('index'))
             self.assertContains(response, '<i class="fas fa-home"></i>')
+
+        response = self.client.get(reverse(
+            'reset_password', kwargs={
+                'uidb64': 'Nw',
+                'token': '4w3-813b21d8950ad39c5f28'
+            }
+        ))
+        self.assertTrue(response.status_code, 200)
+        self.assertContains(response, reverse('index'))
+        self.assertContains(response, '<i class="fas fa-home"></i>')
 
     def test_user_link_in_all_appropriate_pages(self):
         pages_with_user = [
@@ -848,12 +895,18 @@ class BaseContentTest(UserReadyTestCase):
 
     def test_common_stylesheets(self):
         self.create_and_login_user()
+        self.create_quote()
+
         # Missing problematic pages to reverse, like password change and reset
-        pages_expanding_base = [
-            'index', 'daily', 'random', 'profile', 'new_user', 'login',
-            'logout', 'lost_password', 'lost_password_done',
-            'reset_password_done',
-        ]
+        pages_expanding_base = [x.name for x in urls.urlpatterns]
+
+        # Testint logout page last to not logout the user for other tests
+        pages_expanding_base.remove('logout')
+        pages_expanding_base = pages_expanding_base + ['logout']
+
+        # Reset password requires specific call with args. Done below
+        pages_expanding_base.remove('reset_password')
+
         for page in pages_expanding_base:
             response = self.client.get(reverse(page))
             self.assertContains(response, 'quotes/style')
@@ -862,6 +915,19 @@ class BaseContentTest(UserReadyTestCase):
             )
             self.assertContains(response, 'font-awesome.css')
             self.assertContains(response, 'https://use.fontawesome.com')
+
+        response = self.client.get(reverse(
+            'reset_password', kwargs={
+                'uidb64': 'Nw',
+                'token': '4w3-813b21d8950ad39c5f28'
+            }
+        ))
+        self.assertContains(response, 'quotes/style')
+        self.assertContains(
+            response, 'width=device-width, initial-scale=1.0'
+        )
+        self.assertContains(response, 'font-awesome.css')
+        self.assertContains(response, 'https://use.fontawesome.com')
 
 
 class LoginViewTest(UserReadyTestCase):
