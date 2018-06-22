@@ -18,6 +18,13 @@ class Quote(models.Model):
     source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)
     popularity = models.IntegerField(default=0)
 
+    def save(self, *args, **kwargs):
+        # Only one Quote instance can be 'selected'
+        if self.selected:
+            Quote.objects.filter(selected=True).update(selected=False)
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         returned_str = "A quote from %s" % (self.source.name)
         return returned_str
