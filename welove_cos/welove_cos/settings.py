@@ -102,12 +102,22 @@ WSGI_APPLICATION = 'welove_cos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+if DEBUG:
+    DATABASE_PASSWORD = 'loveoverfear'
+else:
+    try:
+        DATABASE_PASSWORD = os.environ['DATABASE_PASSWORD']
+    except KeyError:
+        raise Exception(
+            "DATABASE_PASSWORD environment variable must be set in production."
+        )
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'welove_cosdb',
         'USER': 'cos_lover',
-        'PASSWORD': 'loveoverfear',
+        'PASSWORD': DATABASE_PASSWORD,
         'HOST': 'localhost',
         'PORT': '',
     }
