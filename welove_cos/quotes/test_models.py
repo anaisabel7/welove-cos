@@ -50,6 +50,32 @@ class QuoteTest(QuoteReadyTestCase):
             "A quote from {}".format(quote.source.name)
         )
 
+    def test_save_method(self):
+        quote_one = self.create_quote(text="A rock band rocks")
+        quote_two = self.create_quote(text="A pop band pops")
+
+        quote_one.quote_text = "This rock band rocks"
+        quote_one.save()
+
+        self.assertEqual(
+            Quote.objects.filter(quote_text="This rock band rocks")[0],
+            quote_one
+        )
+
+        quote_one.selected = True
+        quote_one.save()
+
+        selected_quotes = Quote.objects.filter(selected=True)
+        self.assertEqual(len(selected_quotes), 1)
+        self.assertEqual(selected_quotes[0], quote_one)
+
+        quote_two.selected = True
+        quote_two.save()
+
+        selected_quotes = Quote.objects.filter(selected=True)
+        self.assertEqual(len(selected_quotes), 1)
+        self.assertEqual(selected_quotes[0], quote_two)
+
 
 class SourceTest(QuoteReadyTestCase):
     def test_source_fields(self):
