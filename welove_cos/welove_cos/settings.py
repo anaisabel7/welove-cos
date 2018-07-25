@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 try:
     SECRET_KEY = os.environ["SECRET_KEY"]
@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'raven.contrib.django.raven_compat',
     'quotes',
+    'rest_framework',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -195,6 +197,16 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = email_user
 EMAIL_HOST_PASSWORD = email_password
 EMAIL_PORT = 587
+
+# REST framework
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
